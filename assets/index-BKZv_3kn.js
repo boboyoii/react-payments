@@ -9954,9 +9954,6 @@ var getFormattedValidityPeriodUnit = (validityPeriod) => {
 	const { month, year } = validityPeriod;
 	return `${month ? month + "/" : ""}${year ? year : ""}`;
 };
-var formatValidityPeriod = (nextRaw) => {
-	return nextRaw.replace(/\D/g, "").slice(0, 2);
-};
 var padValidityPeriodUnit = (value) => {
 	if (value.length === 1) return `0${value}`;
 	return value;
@@ -9967,6 +9964,9 @@ var Mastercard_default = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKYAAABy
 //#endregion
 //#region src/assets/Visa.png
 var Visa_default = "data:image/png;base64,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";
+//#endregion
+//#region src/assets/MaskingImg.png
+var MaskingImg_default = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAACKADAAQAAAABAAAACAAAAACVhHtSAAAAWElEQVQYGWNgAIL///8rAPF+IH4PxCCwHogVQHIwSZgEWBZKgMQUQApAqnGB/YwgGbBR2IkPTEDxD9jlwKICIAUX8CjYSNiRIN1AZygAMcyxINfvB4mB5ABuSY3bjR/EnAAAAABJRU5ErkJggg==";
 //#endregion
 //#region node_modules/react/cjs/react-jsx-runtime.production.js
 /**
@@ -9979,7 +9979,7 @@ var Visa_default = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKYAAAByCAYAAA
 * LICENSE file in the root directory of this source tree.
 */
 var require_react_jsx_runtime_production = /* @__PURE__ */ __commonJSMin(((exports) => {
-	var REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element");
+	var REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
 	function jsxProd(type, config, maybeKey) {
 		var key = null;
 		void 0 !== maybeKey && (key = "" + maybeKey);
@@ -9997,11 +9997,12 @@ var require_react_jsx_runtime_production = /* @__PURE__ */ __commonJSMin(((expor
 			props: maybeKey
 		};
 	}
+	exports.Fragment = REACT_FRAGMENT_TYPE;
 	exports.jsx = jsxProd;
 	exports.jsxs = jsxProd;
 }));
 //#endregion
-//#region src/components/SwitchCase.tsx
+//#region src/components/common/SwitchCase.tsx
 var import_jsx_runtime = (/* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = require_react_jsx_runtime_production();
 })))();
@@ -10021,7 +10022,7 @@ var SwitchCase = (t0) => {
 	const t2 = t1 || defaultCase;
 	let t3;
 	if ($[3] !== t2) {
-		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: t2 });
+		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_jsx_runtime.Fragment, { children: t2 });
 		$[3] = t2;
 		$[4] = t3;
 	} else t3 = $[4];
@@ -11355,7 +11356,7 @@ var COLOR_PALETTE = {
 	WHITE: "#ffffff"
 };
 //#endregion
-//#region src/components/Card.tsx
+//#region src/components/Card/Card.tsx
 var Card = (t0) => {
 	const $ = (0, import_compiler_runtime.c)(17);
 	const { cardNumberUnits, validityPeriod, brand } = t0;
@@ -11375,7 +11376,10 @@ var Card = (t0) => {
 	if ($[3] === Symbol.for("react.memo_cache_sentinel")) {
 		t3 = {
 			case: "MasterCard",
-			component: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardBrandImg, { src: Mastercard_default })
+			component: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardBrandImg, {
+				src: Mastercard_default,
+				alt: "MasterCard"
+			})
 		};
 		$[3] = t3;
 	} else t3 = $[3];
@@ -11383,7 +11387,10 @@ var Card = (t0) => {
 	if ($[4] === Symbol.for("react.memo_cache_sentinel")) {
 		t4 = [t3, {
 			case: "Visa",
-			component: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardBrandImg, { src: Visa_default })
+			component: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardBrandImg, {
+				src: Visa_default,
+				alt: "Visa"
+			})
 		}];
 		$[4] = t4;
 	} else t4 = $[4];
@@ -11399,7 +11406,7 @@ var Card = (t0) => {
 	} else t5 = $[6];
 	let t6;
 	if ($[7] !== cardNumberUnits) {
-		t6 = cardNumberUnits.map(_temp$2);
+		t6 = cardNumberUnits.map(_temp2);
 		$[7] = cardNumberUnits;
 		$[8] = t6;
 	} else t6 = $[8];
@@ -11459,11 +11466,18 @@ var CardNumberWrapper = styled.div`
   margin-top: 0.875rem;
 `;
 var CardNumberUnit = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
   font-weight: 500;
   font-style: Medium;
   font-size: 0.875rem;
   color: ${COLOR_PALETTE.WHITE};
   letter-spacing: 16%;
+`;
+var MaskingImg = styled.img`
+  width: 0.25rem;
+  height: 0.25rem;
 `;
 var CardValidityPeriodWrapper = styled.div`
   display: flex;
@@ -11478,11 +11492,17 @@ var CardValidityPeriodUnit = styled.span`
   color: ${COLOR_PALETTE.WHITE};
   letter-spacing: 16%;
 `;
-function _temp$2(cardNumberUnit, index) {
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardNumberUnit, { children: index < 2 ? cardNumberUnit : "*".repeat(cardNumberUnit.length) }, index);
+function _temp$3(_, index_0) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MaskingImg, {
+		src: MaskingImg_default,
+		alt: "MaskingImg"
+	}, index_0);
+}
+function _temp2(cardNumberUnit, index) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardNumberUnit, { children: index < 2 ? cardNumberUnit : Array.from({ length: cardNumberUnit.length }).map(_temp$3) }, index);
 }
 //#endregion
-//#region src/components/Input.tsx
+//#region src/components/common/Input.tsx
 var Input = styled.input`
   width: ${({ fullWidth }) => fullWidth ? "100%" : "auto"};
   border: 1px solid
@@ -11499,9 +11519,9 @@ var Input = styled.input`
   }
 `;
 //#endregion
-//#region src/components/InputField.tsx
+//#region src/components/common/InputField.tsx
 var InputField = (t0) => {
-	const $ = (0, import_compiler_runtime.c)(18);
+	const $ = (0, import_compiler_runtime.c)(20);
 	const { title, caption, label, inputPropsList, helperMessage: t1 } = t0;
 	const helperMessage = t1 === void 0 ? "" : t1;
 	let t2;
@@ -11518,13 +11538,13 @@ var InputField = (t0) => {
 	} else t3 = $[3];
 	let t4;
 	if ($[4] !== label) {
-		t4 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Label, { children: label });
+		t4 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Legend, { children: label });
 		$[4] = label;
 		$[5] = t4;
 	} else t4 = $[5];
 	let t5;
 	if ($[6] !== inputPropsList) {
-		t5 = inputPropsList.map(_temp$1);
+		t5 = inputPropsList.map(_temp$2);
 		$[6] = inputPropsList;
 		$[7] = t5;
 	} else t5 = $[7];
@@ -11535,28 +11555,33 @@ var InputField = (t0) => {
 		$[9] = t6;
 	} else t6 = $[9];
 	let t7;
-	if ($[10] !== helperMessage) {
-		t7 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(HelperMessage, { children: helperMessage });
-		$[10] = helperMessage;
-		$[11] = t7;
-	} else t7 = $[11];
+	if ($[10] !== t4 || $[11] !== t6) {
+		t7 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Fieldset, { children: [t4, t6] });
+		$[10] = t4;
+		$[11] = t6;
+		$[12] = t7;
+	} else t7 = $[12];
 	let t8;
-	if ($[12] !== t2 || $[13] !== t3 || $[14] !== t4 || $[15] !== t6 || $[16] !== t7) {
-		t8 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Container, { children: [
+	if ($[13] !== helperMessage) {
+		t8 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(HelperMessage, { children: helperMessage });
+		$[13] = helperMessage;
+		$[14] = t8;
+	} else t8 = $[14];
+	let t9;
+	if ($[15] !== t2 || $[16] !== t3 || $[17] !== t7 || $[18] !== t8) {
+		t9 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Container, { children: [
 			t2,
 			t3,
-			t4,
-			t6,
-			t7
+			t7,
+			t8
 		] });
-		$[12] = t2;
-		$[13] = t3;
-		$[14] = t4;
-		$[15] = t6;
-		$[16] = t7;
-		$[17] = t8;
-	} else t8 = $[17];
-	return t8;
+		$[15] = t2;
+		$[16] = t3;
+		$[17] = t7;
+		$[18] = t8;
+		$[19] = t9;
+	} else t9 = $[19];
+	return t9;
 };
 var Container = styled.section`
   width: 100%;
@@ -11571,32 +11596,36 @@ var Caption = styled.p`
   color: ${COLOR_PALETTE.CAPTION};
   margin-top: 0.25rem;
 `;
-var InputWrapper = styled.div`
-  display: flex;
-  gap: 0.625rem;
-  margin-top: 0.5rem;
+var Fieldset = styled.fieldset`
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
 `;
-var Label = styled.label`
+var Legend = styled.legend`
   font-weight: 500;
   font-size: 0.75rem;
   color: ${COLOR_PALETTE.LABEL};
   margin-top: 1rem;
+`;
+var InputWrapper = styled.div`
+  display: flex;
+  gap: 0.625rem;
+  margin-top: 0.5rem;
 `;
 var HelperMessage = styled.p`
   font-weight: 400;
   font-size: 0.5rem;
   color: ${COLOR_PALETTE.ERROR};
 `;
-function _temp$1(inputProps) {
+function _temp$2(inputProps) {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, { ...inputProps });
 }
 //#endregion
 //#region src/utils/validator.ts
-var checkIsNumber = (arg) => {
-	return !Number.isNaN(arg);
-};
-var checkIsInt = (arg) => {
-	return checkIsNumber(arg) && arg === parseInt(`${arg}`);
+var checkIsOnlyDigits = (input) => /^\d*$/.test(input);
+var checkLengthMatches = (input, expectedLength) => {
+	return input.length === expectedLength;
 };
 var validateRange = (arg, min, max) => {
 	return arg >= min && arg <= max;
@@ -11604,441 +11633,491 @@ var validateRange = (arg, min, max) => {
 var validateMonthRange = (month) => {
 	return validateRange(month, 1, 12);
 };
-var validateYearRange = (year) => {
-	return validateRange(year, 0, Infinity);
-};
-var validateCardNumberUnitRange = (cardNumberUnit) => {
-	return validateRange(cardNumberUnit, 0, 9999);
-};
-var validateCVCRange = (CVC) => {
-	return validateRange(CVC, 0, 999);
+var HELPER_MESSAGE$2 = {
+	DEFAULT: "",
+	NOT_NUMBER: "숫자만 입력 가능합니다.",
+	EMPTY: "CVC 번호를 입력해 주세요.",
+	INVALID_LENGTH: `숫자 3자리를 모두 입력해 주세요.`
 };
 //#endregion
-//#region src/components/CardCVCInputField.tsx
-var CVC_MAX_LENGTH = 3;
+//#region src/components/CardCVCInputField/CardCVCInputField.tsx
 var CardCVCInputField = (t0) => {
-	const $ = (0, import_compiler_runtime.c)(11);
+	const $ = (0, import_compiler_runtime.c)(13);
 	const { CVC, onChange } = t0;
-	const [status, setStatus] = (0, import_react.useState)("default");
+	const [status, setStatus] = (0, import_react.useState)("DEFAULT");
 	let t1;
 	if ($[0] !== onChange) {
 		t1 = (input) => {
-			if (input.length !== 0) {
-				if (!checkIsInt(+input) || !validateCVCRange(+input)) return setStatus("error");
+			if (!checkIsOnlyDigits(input)) {
+				setStatus("NOT_NUMBER");
+				return;
 			}
-			setStatus("default");
-			onChange(input.slice(0, CVC_MAX_LENGTH));
+			setStatus("DEFAULT");
+			onChange(input.slice(0, 3));
 		};
 		$[0] = onChange;
 		$[1] = t1;
 	} else t1 = $[1];
-	const handelCVCChange = t1;
-	const t2 = status === "error" ? "숫자만 입력 가능합니다." : "";
-	let t3;
-	if ($[2] !== handelCVCChange) {
-		t3 = (e) => {
-			const input_0 = e.target.value;
-			handelCVCChange(input_0);
+	const handleCVCChange = t1;
+	let t2;
+	if ($[2] === Symbol.for("react.memo_cache_sentinel")) {
+		t2 = (input_0) => {
+			if (input_0.length === 0) {
+				setStatus("EMPTY");
+				return;
+			}
+			if (!checkLengthMatches(input_0, 3)) {
+				setStatus("INVALID_LENGTH");
+				return;
+			}
+			setStatus("DEFAULT");
 		};
-		$[2] = handelCVCChange;
-		$[3] = t3;
-	} else t3 = $[3];
+		$[2] = t2;
+	} else t2 = $[2];
+	const handleCVCBlur = t2;
+	const t3 = HELPER_MESSAGE$2[status];
 	let t4;
-	if ($[4] !== CVC || $[5] !== status || $[6] !== t3) {
-		t4 = [{
+	if ($[3] !== handleCVCChange) {
+		t4 = (e) => {
+			const input_1 = e.target.value;
+			handleCVCChange(input_1);
+		};
+		$[3] = handleCVCChange;
+		$[4] = t4;
+	} else t4 = $[4];
+	let t5;
+	if ($[5] === Symbol.for("react.memo_cache_sentinel")) {
+		t5 = (e_0) => {
+			const input_2 = e_0.target.value;
+			handleCVCBlur(input_2);
+		};
+		$[5] = t5;
+	} else t5 = $[5];
+	const t6 = status === "DEFAULT" ? "default" : "error";
+	let t7;
+	if ($[6] !== CVC || $[7] !== t4 || $[8] !== t6) {
+		t7 = [{
 			placeholder: "123",
-			maxLength: CVC_MAX_LENGTH,
+			maxLength: 3,
 			fullWidth: true,
 			value: CVC,
-			onChange: t3,
-			state: status
+			onChange: t4,
+			onBlur: t5,
+			state: t6
 		}];
-		$[4] = CVC;
-		$[5] = status;
-		$[6] = t3;
+		$[6] = CVC;
 		$[7] = t4;
-	} else t4 = $[7];
-	let t5;
-	if ($[8] !== t2 || $[9] !== t4) {
-		t5 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputField, {
+		$[8] = t6;
+		$[9] = t7;
+	} else t7 = $[9];
+	let t8;
+	if ($[10] !== t3 || $[11] !== t7) {
+		t8 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputField, {
 			title: "CVC 번호를 입력해 주세요",
-			label: "카드 번호",
-			helperMessage: t2,
-			inputPropsList: t4
+			label: "CVC",
+			helperMessage: t3,
+			inputPropsList: t7
 		});
-		$[8] = t2;
-		$[9] = t4;
-		$[10] = t5;
-	} else t5 = $[10];
-	return t5;
+		$[10] = t3;
+		$[11] = t7;
+		$[12] = t8;
+	} else t8 = $[12];
+	return t8;
+};
+var HELPER_MESSAGE$1 = {
+	DEFAULT: "",
+	NOT_NUMBER: "숫자만 입력 가능합니다.",
+	EMPTY: "카드 번호를 입력해 주세요.",
+	INVALID_LENGTH: `각 필드당 숫자 4자리를 모두 입력해 주세요.`
 };
 //#endregion
-//#region src/components/CardNumberInputField.tsx
+//#region src/components/CardNumberInputField/CardNumberInputField.tsx
 var INPUTS_STATUSES$1 = [
-	"default",
-	"default",
-	"default",
-	"default"
+	"DEFAULT",
+	"DEFAULT",
+	"DEFAULT",
+	"DEFAULT"
 ];
-var CARD_NUMBER_UNIT_MAX_LENGTH = 4;
 var CardNumberInputField = (t0) => {
-	const $ = (0, import_compiler_runtime.c)(35);
+	const $ = (0, import_compiler_runtime.c)(41);
 	const { cardNumberUnits, onChange } = t0;
 	const [status, setStatus] = (0, import_react.useState)(INPUTS_STATUSES$1);
 	let t1;
-	if ($[0] !== cardNumberUnits || $[1] !== onChange) {
-		t1 = (index, input) => {
-			if (input.length !== 0) {
-				if (!checkIsInt(+input) || !validateCardNumberUnitRange(+input)) {
-					setStatus((prev) => {
-						const newInputsStatuses = [...prev];
-						newInputsStatuses[index] = "error";
-						return newInputsStatuses;
-					});
-					return;
-				}
-			}
-			setStatus(INPUTS_STATUSES$1);
-			const newCardNumberUnits = [...cardNumberUnits];
-			newCardNumberUnits[index] = input.slice(0, CARD_NUMBER_UNIT_MAX_LENGTH);
-			onChange(newCardNumberUnits);
-		};
-		$[0] = cardNumberUnits;
-		$[1] = onChange;
-		$[2] = t1;
-	} else t1 = $[2];
-	const handleCardNumberChange = t1;
-	const t2 = status.includes("error") ? "숫자만 입력 가능합니다." : "";
-	let t3;
-	if ($[3] !== handleCardNumberChange) {
-		t3 = (e) => {
-			const input_0 = e.target.value;
-			handleCardNumberChange(0, input_0);
-		};
-		$[3] = handleCardNumberChange;
-		$[4] = t3;
-	} else t3 = $[4];
-	let t4;
-	if ($[5] !== cardNumberUnits[0] || $[6] !== status[0] || $[7] !== t3) {
-		t4 = {
-			placeholder: "1234",
-			maxLength: CARD_NUMBER_UNIT_MAX_LENGTH,
-			fullWidth: true,
-			value: cardNumberUnits[0],
-			onChange: t3,
-			state: status[0]
-		};
-		$[5] = cardNumberUnits[0];
-		$[6] = status[0];
-		$[7] = t3;
-		$[8] = t4;
-	} else t4 = $[8];
-	let t5;
-	if ($[9] !== handleCardNumberChange) {
-		t5 = (e_0) => {
-			const input_1 = e_0.target.value;
-			handleCardNumberChange(1, input_1);
-		};
-		$[9] = handleCardNumberChange;
-		$[10] = t5;
-	} else t5 = $[10];
-	let t6;
-	if ($[11] !== cardNumberUnits[1] || $[12] !== status[1] || $[13] !== t5) {
-		t6 = {
-			placeholder: "1234",
-			maxLength: CARD_NUMBER_UNIT_MAX_LENGTH,
-			fullWidth: true,
-			value: cardNumberUnits[1],
-			onChange: t5,
-			state: status[1]
-		};
-		$[11] = cardNumberUnits[1];
-		$[12] = status[1];
-		$[13] = t5;
-		$[14] = t6;
-	} else t6 = $[14];
-	let t7;
-	if ($[15] !== handleCardNumberChange) {
-		t7 = (e_1) => {
-			const input_2 = e_1.target.value;
-			handleCardNumberChange(2, input_2);
-		};
-		$[15] = handleCardNumberChange;
-		$[16] = t7;
-	} else t7 = $[16];
-	let t8;
-	if ($[17] !== cardNumberUnits[2] || $[18] !== status[2] || $[19] !== t7) {
-		t8 = {
-			placeholder: "1234",
-			maxLength: CARD_NUMBER_UNIT_MAX_LENGTH,
-			fullWidth: true,
-			value: cardNumberUnits[2],
-			onChange: t7,
-			state: status[2]
-		};
-		$[17] = cardNumberUnits[2];
-		$[18] = status[2];
-		$[19] = t7;
-		$[20] = t8;
-	} else t8 = $[20];
-	let t9;
-	if ($[21] !== handleCardNumberChange) {
-		t9 = (e_2) => {
-			const input_3 = e_2.target.value;
-			handleCardNumberChange(3, input_3);
-		};
-		$[21] = handleCardNumberChange;
-		$[22] = t9;
-	} else t9 = $[22];
-	let t10;
-	if ($[23] !== cardNumberUnits[3] || $[24] !== status[3] || $[25] !== t9) {
-		t10 = {
-			placeholder: "1234",
-			maxLength: CARD_NUMBER_UNIT_MAX_LENGTH,
-			fullWidth: true,
-			value: cardNumberUnits[3],
-			onChange: t9,
-			state: status[3]
-		};
-		$[23] = cardNumberUnits[3];
-		$[24] = status[3];
-		$[25] = t9;
-		$[26] = t10;
-	} else t10 = $[26];
-	let t11;
-	if ($[27] !== t10 || $[28] !== t4 || $[29] !== t6 || $[30] !== t8) {
-		t11 = [
-			t4,
-			t6,
-			t8,
-			t10
-		];
-		$[27] = t10;
-		$[28] = t4;
-		$[29] = t6;
-		$[30] = t8;
-		$[31] = t11;
-	} else t11 = $[31];
-	let t12;
-	if ($[32] !== t11 || $[33] !== t2) {
-		t12 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputField, {
-			title: "결제할 카드 번호를 입력해 주세요",
-			caption: "본인 명의의 카드만 결제 가능합니다.",
-			label: "카드 번호",
-			helperMessage: t2,
-			inputPropsList: t11
-		});
-		$[32] = t11;
-		$[33] = t2;
-		$[34] = t12;
-	} else t12 = $[34];
-	return t12;
-};
-//#endregion
-//#region src/components/CardValidityPeriodInputField.tsx
-var MONTH_MAX_LENGTH = 2;
-var YEAR_MAX_LENGTH = 2;
-var INPUTS_STATUSES = {
-	month: "default",
-	year: "default"
-};
-var CardValidityPeriodInputField = (t0) => {
-	const $ = (0, import_compiler_runtime.c)(31);
-	const { validityPeriod, onChange } = t0;
-	const [status, setStatus] = (0, import_react.useState)(INPUTS_STATUSES);
-	let t1;
 	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
-		t1 = (key, rawValue) => {
-			if (/\D/.test(rawValue)) {
-				setStatus((prev) => ({
-					...prev,
-					[key]: "error"
-				}));
-				return false;
-			}
-			const value = formatValidityPeriod(rawValue);
-			if (key === "month") {
-				if (value.length === 0) {
-					setStatus(_temp);
-					return true;
-				}
-				if (!checkIsInt(+value)) {
-					setStatus(_temp2);
-					return false;
-				}
-				if (value.length === MONTH_MAX_LENGTH && !validateMonthRange(+value)) {
-					setStatus(_temp3);
-					return false;
-				}
-				setStatus(_temp4);
-			}
-			if (key === "year") {
-				if (value.length === 0) {
-					setStatus(_temp5);
-					return true;
-				}
-				if (!checkIsInt(+value) || !validateYearRange(+value)) {
-					setStatus(_temp6);
-					return false;
-				}
-				setStatus(_temp7);
-			}
-			return true;
+		t1 = (index, inputStatus) => {
+			setStatus((prev) => {
+				const newInputsStatuses = [...prev];
+				newInputsStatuses[index] = inputStatus;
+				return newInputsStatuses;
+			});
 		};
 		$[0] = t1;
 	} else t1 = $[0];
-	const validityPeriodChange = t1;
+	const updateInputStatus = t1;
 	let t2;
-	if ($[1] !== onChange || $[2] !== validityPeriod) {
-		t2 = (key_0, value_0) => {
-			if (!validityPeriodChange(key_0, value_0)) return;
-			onChange({
-				...validityPeriod,
-				[key_0]: formatValidityPeriod(value_0)
-			});
+	if ($[1] !== cardNumberUnits || $[2] !== onChange) {
+		t2 = (index_0, input) => {
+			if (!checkIsOnlyDigits(input)) {
+				updateInputStatus(index_0, "NOT_NUMBER");
+				return;
+			}
+			updateInputStatus(index_0, "DEFAULT");
+			const newCardNumberUnits = [...cardNumberUnits];
+			newCardNumberUnits[index_0] = input.slice(0, 4);
+			onChange(newCardNumberUnits);
 		};
-		$[1] = onChange;
-		$[2] = validityPeriod;
+		$[1] = cardNumberUnits;
+		$[2] = onChange;
 		$[3] = t2;
 	} else t2 = $[3];
-	const handleValidityPeriodChange = t2;
+	const handleCardNumberChange = t2;
 	let t3;
-	if ($[4] !== onChange || $[5] !== validityPeriod) {
-		t3 = (key_1) => {
-			const padded = padValidityPeriodUnit(validityPeriod[key_1]);
-			validityPeriodChange(key_1, padded);
-			if (padded === validityPeriod[key_1]) return;
+	if ($[4] === Symbol.for("react.memo_cache_sentinel")) {
+		t3 = (index_1, input_0) => {
+			if (input_0.length === 0) {
+				updateInputStatus(index_1, "EMPTY");
+				return;
+			}
+			if (!checkLengthMatches(input_0, 4)) {
+				updateInputStatus(index_1, "INVALID_LENGTH");
+				return;
+			}
+			updateInputStatus(index_1, "DEFAULT");
+		};
+		$[4] = t3;
+	} else t3 = $[4];
+	const handleCardNumberBlur = t3;
+	const t4 = HELPER_MESSAGE$1[status.find(_temp$1) ?? "DEFAULT"];
+	let t5;
+	if ($[5] !== handleCardNumberChange) {
+		t5 = (e) => {
+			const input_1 = e.target.value;
+			handleCardNumberChange(0, input_1);
+		};
+		$[5] = handleCardNumberChange;
+		$[6] = t5;
+	} else t5 = $[6];
+	let t6;
+	if ($[7] === Symbol.for("react.memo_cache_sentinel")) {
+		t6 = (e_0) => {
+			const input_2 = e_0.target.value;
+			handleCardNumberBlur(0, input_2);
+		};
+		$[7] = t6;
+	} else t6 = $[7];
+	const t7 = status[0] === "DEFAULT" ? "default" : "error";
+	let t8;
+	if ($[8] !== cardNumberUnits[0] || $[9] !== t5 || $[10] !== t7) {
+		t8 = {
+			placeholder: "1234",
+			maxLength: 4,
+			fullWidth: true,
+			value: cardNumberUnits[0],
+			onChange: t5,
+			onBlur: t6,
+			state: t7
+		};
+		$[8] = cardNumberUnits[0];
+		$[9] = t5;
+		$[10] = t7;
+		$[11] = t8;
+	} else t8 = $[11];
+	let t9;
+	if ($[12] !== handleCardNumberChange) {
+		t9 = (e_1) => {
+			const input_3 = e_1.target.value;
+			handleCardNumberChange(1, input_3);
+		};
+		$[12] = handleCardNumberChange;
+		$[13] = t9;
+	} else t9 = $[13];
+	let t10;
+	if ($[14] === Symbol.for("react.memo_cache_sentinel")) {
+		t10 = (e_2) => {
+			const input_4 = e_2.target.value;
+			handleCardNumberBlur(1, input_4);
+		};
+		$[14] = t10;
+	} else t10 = $[14];
+	const t11 = status[1] === "DEFAULT" ? "default" : "error";
+	let t12;
+	if ($[15] !== cardNumberUnits[1] || $[16] !== t11 || $[17] !== t9) {
+		t12 = {
+			placeholder: "1234",
+			maxLength: 4,
+			fullWidth: true,
+			value: cardNumberUnits[1],
+			onChange: t9,
+			onBlur: t10,
+			state: t11
+		};
+		$[15] = cardNumberUnits[1];
+		$[16] = t11;
+		$[17] = t9;
+		$[18] = t12;
+	} else t12 = $[18];
+	let t13;
+	if ($[19] !== handleCardNumberChange) {
+		t13 = (e_3) => {
+			const input_5 = e_3.target.value;
+			handleCardNumberChange(2, input_5);
+		};
+		$[19] = handleCardNumberChange;
+		$[20] = t13;
+	} else t13 = $[20];
+	let t14;
+	if ($[21] === Symbol.for("react.memo_cache_sentinel")) {
+		t14 = (e_4) => {
+			const input_6 = e_4.target.value;
+			handleCardNumberBlur(2, input_6);
+		};
+		$[21] = t14;
+	} else t14 = $[21];
+	const t15 = status[2] === "DEFAULT" ? "default" : "error";
+	let t16;
+	if ($[22] !== cardNumberUnits[2] || $[23] !== t13 || $[24] !== t15) {
+		t16 = {
+			placeholder: "1234",
+			maxLength: 4,
+			fullWidth: true,
+			value: cardNumberUnits[2],
+			onChange: t13,
+			onBlur: t14,
+			state: t15
+		};
+		$[22] = cardNumberUnits[2];
+		$[23] = t13;
+		$[24] = t15;
+		$[25] = t16;
+	} else t16 = $[25];
+	let t17;
+	if ($[26] !== handleCardNumberChange) {
+		t17 = (e_5) => {
+			const input_7 = e_5.target.value;
+			handleCardNumberChange(3, input_7);
+		};
+		$[26] = handleCardNumberChange;
+		$[27] = t17;
+	} else t17 = $[27];
+	let t18;
+	if ($[28] === Symbol.for("react.memo_cache_sentinel")) {
+		t18 = (e_6) => {
+			const input_8 = e_6.target.value;
+			handleCardNumberBlur(3, input_8);
+		};
+		$[28] = t18;
+	} else t18 = $[28];
+	const t19 = status[3] === "DEFAULT" ? "default" : "error";
+	let t20;
+	if ($[29] !== cardNumberUnits[3] || $[30] !== t17 || $[31] !== t19) {
+		t20 = {
+			placeholder: "1234",
+			maxLength: 4,
+			fullWidth: true,
+			value: cardNumberUnits[3],
+			onChange: t17,
+			onBlur: t18,
+			state: t19
+		};
+		$[29] = cardNumberUnits[3];
+		$[30] = t17;
+		$[31] = t19;
+		$[32] = t20;
+	} else t20 = $[32];
+	let t21;
+	if ($[33] !== t12 || $[34] !== t16 || $[35] !== t20 || $[36] !== t8) {
+		t21 = [
+			t8,
+			t12,
+			t16,
+			t20
+		];
+		$[33] = t12;
+		$[34] = t16;
+		$[35] = t20;
+		$[36] = t8;
+		$[37] = t21;
+	} else t21 = $[37];
+	let t22;
+	if ($[38] !== t21 || $[39] !== t4) {
+		t22 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputField, {
+			title: "결제할 카드 번호를 입력해 주세요",
+			caption: "본인 명의의 카드만 결제 가능합니다.",
+			label: "카드 번호",
+			helperMessage: t4,
+			inputPropsList: t21
+		});
+		$[38] = t21;
+		$[39] = t4;
+		$[40] = t22;
+	} else t22 = $[40];
+	return t22;
+};
+function _temp$1(inputStatus_0) {
+	return inputStatus_0 !== "DEFAULT";
+}
+//#endregion
+//#region src/components/CardValidityPeriodInputField/constants.ts
+var HELPER_MESSAGE = {
+	DEFAULT: "",
+	NOT_NUMBER: "숫자만 입력 가능합니다.",
+	INVALID_MONTH_RANGE: "월은 1부터 12 사이의 숫자로 입력해 주세요.",
+	EMPTY_MONTH: "만료월을 입력해 주세요.",
+	EMPTY_YEAR: "만료년을 입력해 주세요."
+};
+//#endregion
+//#region src/components/CardValidityPeriodInputField/CardValidityPeriodInputField.tsx
+var INPUTS_STATUSES = {
+	month: "DEFAULT",
+	year: "DEFAULT"
+};
+var CardValidityPeriodInputField = (t0) => {
+	const $ = (0, import_compiler_runtime.c)(30);
+	const { validityPeriod, onChange } = t0;
+	const [status, setStatus] = (0, import_react.useState)(INPUTS_STATUSES);
+	let t1;
+	if ($[0] !== onChange || $[1] !== validityPeriod) {
+		t1 = (key, input) => {
+			if (!checkIsOnlyDigits(input)) {
+				setStatus((prev) => ({
+					...prev,
+					[key]: "NOT_NUMBER"
+				}));
+				return;
+			}
+			setStatus((prev_0) => ({
+				...prev_0,
+				[key]: "DEFAULT"
+			}));
 			onChange({
 				...validityPeriod,
-				[key_1]: padded
+				[key]: input.slice(0, key === "month" ? 2 : 2)
 			});
 		};
-		$[4] = onChange;
-		$[5] = validityPeriod;
-		$[6] = t3;
-	} else t3 = $[6];
-	const handleValidityPeriodBlur = t3;
+		$[0] = onChange;
+		$[1] = validityPeriod;
+		$[2] = t1;
+	} else t1 = $[2];
+	const handleValidityPeriodChange = t1;
+	let t2;
+	if ($[3] !== onChange || $[4] !== validityPeriod) {
+		t2 = (key_0, input_0) => {
+			if (input_0.length === 0) {
+				setStatus((prev_1) => ({
+					...prev_1,
+					[key_0]: key_0 === "month" ? "EMPTY_MONTH" : "EMPTY_YEAR"
+				}));
+				return;
+			}
+			if (key_0 === "month") {
+				if (!validateMonthRange(+input_0)) {
+					setStatus(_temp);
+					return;
+				}
+			}
+			setStatus((prev_3) => ({
+				...prev_3,
+				[key_0]: "DEFAULT"
+			}));
+			const padded = padValidityPeriodUnit(input_0);
+			if (padded === input_0) return;
+			onChange({
+				...validityPeriod,
+				[key_0]: padded
+			});
+		};
+		$[3] = onChange;
+		$[4] = validityPeriod;
+		$[5] = t2;
+	} else t2 = $[5];
+	const handleValidityPeriodBlur = t2;
+	let t3;
+	if ($[6] !== handleValidityPeriodChange) {
+		t3 = (e) => handleValidityPeriodChange("month", e.target.value);
+		$[6] = handleValidityPeriodChange;
+		$[7] = t3;
+	} else t3 = $[7];
 	let t4;
-	if ($[7] !== handleValidityPeriodChange) {
-		t4 = (e) => handleValidityPeriodChange("month", e.target.value);
-		$[7] = handleValidityPeriodChange;
-		$[8] = t4;
-	} else t4 = $[8];
-	let t5;
-	if ($[9] !== handleValidityPeriodBlur) {
-		t5 = () => handleValidityPeriodBlur("month");
-		$[9] = handleValidityPeriodBlur;
-		$[10] = t5;
-	} else t5 = $[10];
+	if ($[8] !== handleValidityPeriodBlur) {
+		t4 = (e_0) => handleValidityPeriodBlur("month", e_0.target.value);
+		$[8] = handleValidityPeriodBlur;
+		$[9] = t4;
+	} else t4 = $[9];
+	const t5 = status.month === "DEFAULT" ? "default" : "error";
 	let t6;
-	if ($[11] !== status.month || $[12] !== t4 || $[13] !== t5 || $[14] !== validityPeriod.month) {
+	if ($[10] !== t3 || $[11] !== t4 || $[12] !== t5 || $[13] !== validityPeriod.month) {
 		t6 = {
 			placeholder: "MM",
-			maxLength: MONTH_MAX_LENGTH,
+			maxLength: 2,
 			fullWidth: true,
 			value: validityPeriod.month,
-			onChange: t4,
-			onBlur: t5,
-			state: status.month
+			onChange: t3,
+			onBlur: t4,
+			state: t5
 		};
-		$[11] = status.month;
-		$[12] = t4;
-		$[13] = t5;
-		$[14] = validityPeriod.month;
-		$[15] = t6;
-	} else t6 = $[15];
+		$[10] = t3;
+		$[11] = t4;
+		$[12] = t5;
+		$[13] = validityPeriod.month;
+		$[14] = t6;
+	} else t6 = $[14];
 	let t7;
-	if ($[16] !== handleValidityPeriodChange) {
-		t7 = (e_0) => handleValidityPeriodChange("year", e_0.target.value);
-		$[16] = handleValidityPeriodChange;
-		$[17] = t7;
-	} else t7 = $[17];
+	if ($[15] !== handleValidityPeriodChange) {
+		t7 = (e_1) => handleValidityPeriodChange("year", e_1.target.value);
+		$[15] = handleValidityPeriodChange;
+		$[16] = t7;
+	} else t7 = $[16];
 	let t8;
-	if ($[18] !== handleValidityPeriodBlur) {
-		t8 = () => handleValidityPeriodBlur("year");
-		$[18] = handleValidityPeriodBlur;
-		$[19] = t8;
-	} else t8 = $[19];
-	let t9;
-	if ($[20] !== status.year || $[21] !== t7 || $[22] !== t8 || $[23] !== validityPeriod.year) {
-		t9 = {
+	if ($[17] !== handleValidityPeriodBlur) {
+		t8 = (e_2) => handleValidityPeriodBlur("year", e_2.target.value);
+		$[17] = handleValidityPeriodBlur;
+		$[18] = t8;
+	} else t8 = $[18];
+	const t9 = status.year === "DEFAULT" ? "default" : "error";
+	let t10;
+	if ($[19] !== t7 || $[20] !== t8 || $[21] !== t9 || $[22] !== validityPeriod.year) {
+		t10 = {
 			placeholder: "YY",
-			maxLength: YEAR_MAX_LENGTH,
+			maxLength: 2,
 			fullWidth: true,
 			value: validityPeriod.year,
 			onChange: t7,
 			onBlur: t8,
-			state: status.year
+			state: t9
 		};
-		$[20] = status.year;
-		$[21] = t7;
-		$[22] = t8;
-		$[23] = validityPeriod.year;
-		$[24] = t9;
-	} else t9 = $[24];
-	let t10;
-	if ($[25] !== t6 || $[26] !== t9) {
-		t10 = [t6, t9];
+		$[19] = t7;
+		$[20] = t8;
+		$[21] = t9;
+		$[22] = validityPeriod.year;
+		$[23] = t10;
+	} else t10 = $[23];
+	let t11;
+	if ($[24] !== t10 || $[25] !== t6) {
+		t11 = [t6, t10];
+		$[24] = t10;
 		$[25] = t6;
-		$[26] = t9;
-		$[27] = t10;
-	} else t10 = $[27];
-	const t11 = status.month === "error" || status.year === "error" ? "숫자만 입력 가능합니다." : "";
-	let t12;
-	if ($[28] !== t10 || $[29] !== t11) {
-		t12 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputField, {
+		$[26] = t11;
+	} else t11 = $[26];
+	const t12 = status.month !== "DEFAULT" ? HELPER_MESSAGE[status.month] : HELPER_MESSAGE[status.year];
+	let t13;
+	if ($[27] !== t11 || $[28] !== t12) {
+		t13 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InputField, {
 			title: "카드 유효기간을 입력해 주세요",
 			caption: "월/년도(MMYY)를 순서대로 입력해 주세요.",
 			label: "유효기간",
-			inputPropsList: t10,
-			helperMessage: t11
+			inputPropsList: t11,
+			helperMessage: t12
 		});
-		$[28] = t10;
-		$[29] = t11;
-		$[30] = t12;
-	} else t12 = $[30];
-	return t12;
+		$[27] = t11;
+		$[28] = t12;
+		$[29] = t13;
+	} else t13 = $[29];
+	return t13;
 };
-function _temp(prev_0) {
-	return {
-		...prev_0,
-		month: "default"
-	};
-}
-function _temp2(prev_1) {
-	return {
-		...prev_1,
-		month: "error"
-	};
-}
-function _temp3(prev_2) {
+function _temp(prev_2) {
 	return {
 		...prev_2,
-		month: "error"
-	};
-}
-function _temp4(prev_3) {
-	return {
-		...prev_3,
-		month: "default"
-	};
-}
-function _temp5(prev_4) {
-	return {
-		...prev_4,
-		year: "default"
-	};
-}
-function _temp6(prev_5) {
-	return {
-		...prev_5,
-		year: "error"
-	};
-}
-function _temp7(prev_6) {
-	return {
-		...prev_6,
-		year: "default"
+		month: "INVALID_MONTH_RANGE"
 	};
 }
 //#endregion
