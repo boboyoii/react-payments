@@ -17882,7 +17882,7 @@ var router = createBrowserRouter([{
 }, {
 	path: ROUTE_PATH.ADD_CARD_COMPLETE,
 	element: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AddCardCompletePage, {})
-}]);
+}], { basename: "/react-payments/" });
 //#endregion
 //#region src/App.tsx
 var App = () => {
