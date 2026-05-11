@@ -17876,14 +17876,13 @@ var CompleteTitle = styled.h1`
 `;
 //#endregion
 //#region src/router.tsx
-var basename = "/react-payments/".replace(/\/$/, "");
 var router = createBrowserRouter([{
 	path: ROUTE_PATH.ADD_CARD,
 	element: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AddNewCardPage, {})
 }, {
 	path: ROUTE_PATH.ADD_CARD_COMPLETE,
 	element: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AddCardCompletePage, {})
-}], { basename });
+}]);
 //#endregion
 //#region src/App.tsx
 var App = () => {
