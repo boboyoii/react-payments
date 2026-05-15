@@ -16367,12 +16367,14 @@ tags.forEach(function(tagName) {
 var COLOR_PALETTE = {
 	ERROR: "#ff3d3d",
 	LABEL: "#0a0d13",
-	CAPTION: "#8b95a1",
 	YELLOW: "#ddcd78",
-	GREY: "#acacac",
+	"GREY-100": "#F5F5F5",
+	"GREY-400": "#acacac",
+	"GREY-500": "#8b95a1",
 	"BLACK-900": "#000000",
 	"BLACK-800": "#333",
 	"BLACK-700": "#353C49",
+	"BLACK-600": "#4f4f4f",
 	WHITE: "#ffffff"
 };
 //#endregion
@@ -16691,7 +16693,7 @@ var Title = styled.h2`
 var Caption = styled.p`
   font-weight: 400;
   font-size: 0.6rem;
-  color: ${COLOR_PALETTE.CAPTION};
+  color: ${COLOR_PALETTE["GREY-500"]}};
   margin-top: 0.25rem;
 `;
 var Fieldset = styled.fieldset`
@@ -16721,9 +16723,10 @@ var HelperMessage = styled.p`
 //#endregion
 //#region src/components/CardCompanySelector/CardCompanySelector.tsx
 function CardCompanySelector(t0) {
-	const $ = (0, import_compiler_runtime.c)(16);
+	const $ = (0, import_compiler_runtime.c)(20);
 	const { cardCompany, onSelect, onNextStep } = t0;
 	const [isOpen, setIsOpen] = (0, import_react.useState)(false);
+	const selectWrapperRef = (0, import_react.useRef)(null);
 	let t1;
 	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
 		t1 = () => {
@@ -16737,77 +16740,114 @@ function CardCompanySelector(t0) {
 		t2 = (company) => {
 			onSelect(company);
 			setIsOpen(false);
-			onNextStep();
+			onNextStep("COMPANY");
 		};
 		$[1] = onNextStep;
 		$[2] = onSelect;
 		$[3] = t2;
 	} else t2 = $[3];
 	const handleSelect = t2;
-	const t3 = cardCompany ? "selected" : "placeholder";
-	const t4 = cardCompany?.name ?? "카드사를 선택해주세요";
-	let t5;
-	if ($[4] !== t3 || $[5] !== t4) {
-		t5 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectedText, {
-			state: t3,
-			children: t4
-		});
-		$[4] = t3;
-		$[5] = t4;
-		$[6] = t5;
-	} else t5 = $[6];
-	let t6;
-	if ($[7] === Symbol.for("react.memo_cache_sentinel")) {
-		t6 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowIcon, {
-			src: arrowDownIcon_default,
-			alt: ""
-		});
-		$[7] = t6;
-	} else t6 = $[7];
+	let t3;
+	let t4;
+	if ($[4] !== isOpen) {
+		t3 = () => {
+			if (!isOpen) return;
+			const handleKeyDown = (event) => {
+				if (event.key === "Escape") setIsOpen(false);
+			};
+			const handleClickOutside = (event_0) => {
+				if (!selectWrapperRef.current) return;
+				if (!selectWrapperRef.current.contains(event_0.target)) setIsOpen(false);
+			};
+			document.addEventListener("keydown", handleKeyDown);
+			document.addEventListener("mousedown", handleClickOutside);
+			return () => {
+				document.removeEventListener("keydown", handleKeyDown);
+				document.removeEventListener("mousedown", handleClickOutside);
+			};
+		};
+		t4 = [isOpen];
+		$[4] = isOpen;
+		$[5] = t3;
+		$[6] = t4;
+	} else {
+		t3 = $[5];
+		t4 = $[6];
+	}
+	(0, import_react.useEffect)(t3, t4);
+	const t5 = cardCompany ? "selected" : "placeholder";
+	const t6 = cardCompany?.name ?? "카드사를 선택해주세요";
 	let t7;
-	if ($[8] !== t5) {
-		t7 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SelectButton, {
-			type: "button",
-			onClick: handleToggle,
-			children: [t5, t6]
+	if ($[7] !== t5 || $[8] !== t6) {
+		t7 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectedText, {
+			state: t5,
+			children: t6
 		});
-		$[8] = t5;
+		$[7] = t5;
+		$[8] = t6;
 		$[9] = t7;
 	} else t7 = $[9];
 	let t8;
-	if ($[10] !== handleSelect || $[11] !== isOpen) {
-		t8 = isOpen && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(OptionList, { children: CARD_COMPANIES.map((company_0) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(OptionItem, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(OptionButton, {
+	if ($[10] === Symbol.for("react.memo_cache_sentinel")) {
+		t8 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowIcon, {
+			src: arrowDownIcon_default,
+			alt: ""
+		});
+		$[10] = t8;
+	} else t8 = $[10];
+	let t9;
+	if ($[11] !== t7) {
+		t9 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SelectButton, {
 			type: "button",
+			onClick: handleToggle,
+			children: [t7, t8]
+		});
+		$[11] = t7;
+		$[12] = t9;
+	} else t9 = $[12];
+	let t10;
+	if ($[13] !== cardCompany?.name || $[14] !== handleSelect || $[15] !== isOpen) {
+		t10 = isOpen && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(OptionList, { children: CARD_COMPANIES.map((company_0) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(OptionItem, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(OptionButton, {
+			type: "button",
+			selected: company_0.name === cardCompany?.name,
 			onClick: () => handleSelect(company_0),
 			children: company_0.name
 		}) }, company_0.name)) });
-		$[10] = handleSelect;
-		$[11] = isOpen;
-		$[12] = t8;
-	} else t8 = $[12];
-	let t9;
-	if ($[13] !== t7 || $[14] !== t8) {
-		t9 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormField, {
+		$[13] = cardCompany?.name;
+		$[14] = handleSelect;
+		$[15] = isOpen;
+		$[16] = t10;
+	} else t10 = $[16];
+	let t11;
+	if ($[17] !== t10 || $[18] !== t9) {
+		t11 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
 			title: "카드사를 선택해 주세요",
 			caption: "현재 국내 카드사만 가능합니다.",
-			children: [t7, t8]
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SelectWrapper, {
+				ref: selectWrapperRef,
+				children: [t9, t10]
+			})
 		});
-		$[13] = t7;
-		$[14] = t8;
-		$[15] = t9;
-	} else t9 = $[15];
-	return t9;
+		$[17] = t10;
+		$[18] = t9;
+		$[19] = t11;
+	} else t11 = $[19];
+	return t11;
 }
 function _temp$2(prevIsOpen) {
 	return !prevIsOpen;
 }
+var SelectWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`;
 var SelectButton = styled.button`
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid ${COLOR_PALETTE.GREY};
+  border: 1px solid ${COLOR_PALETTE["GREY-400"]};
   border-radius: 0.16rem;
   background-color: ${COLOR_PALETTE.WHITE};
   &:focus {
@@ -16815,7 +16855,7 @@ var SelectButton = styled.button`
   }
 `;
 var SelectedText = styled.span`
-  color: ${({ state }) => state === "placeholder" ? COLOR_PALETTE.GREY : COLOR_PALETTE["BLACK-900"]};
+  color: ${({ state }) => state === "placeholder" ? COLOR_PALETTE["GREY-400"] : COLOR_PALETTE["BLACK-900"]};
 
   font-weight: 400;
   font-size: 0.65rem;
@@ -16826,7 +16866,7 @@ var ArrowIcon = styled.img`
 `;
 var OptionList = styled.ul`
   position: absolute;
-  top: calc(88%);
+  top: calc(110%);
   left: 0;
   z-index: 10;
   box-sizing: border-box;
@@ -16835,7 +16875,7 @@ var OptionList = styled.ul`
   padding: 0;
   list-style: none;
   border-radius: 0.35rem;
-  border: 1px solid ${COLOR_PALETTE.GREY};
+  border: 1px solid ${COLOR_PALETTE["GREY-400"]};
   background-color: ${COLOR_PALETTE.WHITE};
 `;
 var OptionItem = styled.li`
@@ -16846,28 +16886,61 @@ var OptionButton = styled.button`
   padding: 0.5rem 0.67rem;
   border: 0;
   border-radius: 0.35rem;
-  background-color: ${COLOR_PALETTE.WHITE};
-  color: #4f4f4f;
+  background-color: ${({ selected }) => selected ? COLOR_PALETTE["GREY-100"] : COLOR_PALETTE.WHITE};
+  color: ${COLOR_PALETTE["BLACK-600"]};
   font-weight: 400;
   font-size: 0.67rem;
   text-align: left;
   cursor: pointer;
 `;
+//#endregion
+//#region src/constants/cardForm.ts
+var ADD_CARD_FORM_STEP = {
+	CARD_NUMBER: {
+		order: 1,
+		next: "COMPANY"
+	},
+	COMPANY: {
+		order: 2,
+		next: "VALIDITY_PERIOD"
+	},
+	VALIDITY_PERIOD: {
+		order: 3,
+		next: "CVC"
+	},
+	CVC: {
+		order: 4,
+		next: "PASSWORD"
+	},
+	PASSWORD: {
+		order: 5,
+		next: null
+	}
+};
+var CARD_FIELD_LENGTH = {
+	CVC: 3,
+	PASSWORD: 2,
+	VALIDITY_MONTH: 2,
+	VALIDITY_YEAR: 2
+};
+//#endregion
+//#region src/components/CardCVCInputField/constants.ts
+var CVC_MAX_LENGTH = CARD_FIELD_LENGTH.CVC;
 var HELPER_MESSAGE$3 = {
 	DEFAULT: "",
 	NOT_NUMBER: "숫자만 입력 가능합니다.",
 	EMPTY: "CVC 번호를 입력해 주세요.",
-	INVALID_LENGTH: `숫자 3자리를 모두 입력해 주세요.`
+	INVALID_LENGTH: `숫자 ${CVC_MAX_LENGTH}자리를 모두 입력해 주세요.`
 };
 //#endregion
 //#region src/components/common/Input.tsx
 var Input = styled.input`
   width: ${({ fullWidth }) => fullWidth ? "100%" : "auto"};
   border: 1px solid
-    ${({ state }) => state === "error" ? COLOR_PALETTE.ERROR : COLOR_PALETTE.GREY};
+    ${({ state }) => state === "error" ? COLOR_PALETTE.ERROR : COLOR_PALETTE["GREY-400"]};
   border-radius: 2px;
   &::placeholder {
-    color: ${COLOR_PALETTE.GREY};
+    color: ${COLOR_PALETTE["GREY-400"]};
   }
   padding: 8px;
   &:focus {
@@ -16896,19 +16969,49 @@ var checkExpiredValidityPeriod = (month, year) => {
 	const inputMonth = Number(month);
 	return inputYear < currentYear || inputYear === currentYear && inputMonth < currentMonth;
 };
-var checkCardNumberLength = (cardNumber) => {
-	const brandName = detectCardBrand(cardNumber);
-	return cardNumber.join("").length === (brandName ? CARD_BRANDS[brandName].totalLength : 16);
+var validateCardNumberInput = (cardNumber) => {
+	return getCardNumberFormat(detectCardBrand(cardNumber)).map((expectedLength, index) => validateCardNumberUnitInput(cardNumber[index] ?? "", expectedLength)).find((status) => status !== "DEFAULT") ?? "DEFAULT";
+};
+var validateCardNumberUnitInput = (input, expectedLength) => {
+	if (input.length === 0) return "EMPTY";
+	if (!checkIsOnlyDigits(input)) return "NOT_NUMBER";
+	if (!checkLengthMatches(input, expectedLength)) return "INVALID_LENGTH";
+	return "DEFAULT";
+};
+var validateExpiryMonth = (month, year) => {
+	if (month.length === 0) return "EMPTY_MONTH";
+	if (!checkIsOnlyDigits(month)) return "NOT_NUMBER";
+	if (!checkLengthMatches(month, CARD_FIELD_LENGTH.VALIDITY_MONTH)) return "INVALID_MONTH_LENGTH";
+	if (!validateMonthRange(+month)) return "INVALID_MONTH_RANGE";
+	if (checkLengthMatches(year, CARD_FIELD_LENGTH.VALIDITY_YEAR) && checkExpiredValidityPeriod(month, year)) return "EXPIRED_VALIDITY_PERIOD";
+	return "DEFAULT";
+};
+var validateExpiryYear = (year, month) => {
+	if (year.length === 0) return "EMPTY_YEAR";
+	if (!checkIsOnlyDigits(year)) return "NOT_NUMBER";
+	if (!checkLengthMatches(year, CARD_FIELD_LENGTH.VALIDITY_YEAR)) return "INVALID_YEAR_LENGTH";
+	if (checkLengthMatches(month, CARD_FIELD_LENGTH.VALIDITY_MONTH) && checkExpiredValidityPeriod(month, year)) return "EXPIRED_VALIDITY_PERIOD";
+	return "DEFAULT";
+};
+var validateCVCInput = (input) => {
+	if (input.length === 0) return "EMPTY";
+	if (!checkIsOnlyDigits(input)) return "NOT_NUMBER";
+	if (!checkLengthMatches(input, CARD_FIELD_LENGTH.CVC)) return "INVALID_LENGTH";
+	return "DEFAULT";
+};
+var validatePasswordInput = (input) => {
+	if (input.length === 0) return "EMPTY";
+	if (!checkIsOnlyDigits(input)) return "NOT_NUMBER";
+	if (!checkLengthMatches(input, CARD_FIELD_LENGTH.PASSWORD)) return "INVALID_LENGTH";
+	return "DEFAULT";
 };
 var validateCardForm = (cardNumber, cardCompany, { month, year }, CVC, password) => {
-	if (!checkCardNumberLength(cardNumber)) return false;
+	if (validateCardNumberInput(cardNumber) !== "DEFAULT") return false;
 	if (!cardCompany) return false;
-	if (!checkLengthMatches(month, 2)) return false;
-	if (!validateMonthRange(+month)) return false;
-	if (!checkLengthMatches(year, 2)) return false;
-	if (checkExpiredValidityPeriod(month, year)) return false;
-	if (!checkLengthMatches(CVC, 3)) return false;
-	if (!checkLengthMatches(password, 2)) return false;
+	if (validateExpiryMonth(month, year) !== "DEFAULT") return false;
+	if (validateExpiryYear(year, month) !== "DEFAULT") return false;
+	if (validateCVCInput(CVC) !== "DEFAULT") return false;
+	if (validatePasswordInput(password) !== "DEFAULT") return false;
 	return true;
 };
 //#endregion
@@ -16920,13 +17023,15 @@ var CardCVCInputField = (t0) => {
 	let t1;
 	if ($[0] !== onChange || $[1] !== onNextStep) {
 		t1 = (input) => {
-			if (!checkIsOnlyDigits(input)) {
+			const nextCVC = input.slice(0, CVC_MAX_LENGTH);
+			const validationStatus = validateCVCInput(nextCVC);
+			onChange(nextCVC);
+			if (validationStatus === "NOT_NUMBER") {
 				setStatus("NOT_NUMBER");
 				return;
 			}
 			setStatus("DEFAULT");
-			onChange(input.slice(0, 3));
-			if (checkLengthMatches(input, 3)) onNextStep();
+			if (validationStatus === "DEFAULT") onNextStep("CVC");
 		};
 		$[0] = onChange;
 		$[1] = onNextStep;
@@ -16936,15 +17041,7 @@ var CardCVCInputField = (t0) => {
 	let t2;
 	if ($[3] === Symbol.for("react.memo_cache_sentinel")) {
 		t2 = (input_0) => {
-			if (input_0.length === 0) {
-				setStatus("EMPTY");
-				return;
-			}
-			if (!checkLengthMatches(input_0, 3)) {
-				setStatus("INVALID_LENGTH");
-				return;
-			}
-			setStatus("DEFAULT");
+			setStatus(validateCVCInput(input_0.slice(0, CVC_MAX_LENGTH)));
 		};
 		$[3] = t2;
 	} else t2 = $[3];
@@ -16973,7 +17070,8 @@ var CardCVCInputField = (t0) => {
 		t7 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
 			autoFocus: true,
 			placeholder: "123",
-			maxLength: 3,
+			inputMode: "numeric",
+			maxLength: CVC_MAX_LENGTH,
 			fullWidth: true,
 			value: CVC,
 			onChange: t4,
@@ -17077,31 +17175,25 @@ var CardNumberInputField = (t0) => {
 			return newCardNumberUnits;
 		};
 		const handleCardNumberChange = (index_1, input_0) => {
-			if (!checkIsOnlyDigits(input_0)) {
+			const newCardNumberUnits_0 = updateCardNumberUnit(index_1, input_0);
+			const validationStatus = validateCardNumberUnitInput(newCardNumberUnits_0[index_1], cardNumberFormat[index_1]);
+			onChange(newCardNumberUnits_0);
+			if (validationStatus === "NOT_NUMBER") {
 				updateInputStatus(index_1, "NOT_NUMBER");
 				return;
 			}
 			updateInputStatus(index_1, "DEFAULT");
-			const newCardNumberUnits_0 = updateCardNumberUnit(index_1, input_0);
 			const newCardNumberFormat = getCardNumberFormat(detectCardBrand(newCardNumberUnits_0));
 			if (isFormatChanged(cardNumberFormat, newCardNumberFormat)) {
 				const reformattedUnits = updateCardNumberUnitsFormat(newCardNumberUnits_0, newCardNumberFormat);
 				onChange(reformattedUnits);
 				setStatus(reformattedUnits.map(_temp$1));
-			} else onChange(newCardNumberUnits_0);
-			if (newCardNumberUnits_0[index_1].length === cardNumberFormat[index_1]) focusNextInput(index_1);
-			if (checkCardNumberLength(newCardNumberUnits_0)) onNextStep();
+			}
+			if (validationStatus === "DEFAULT") focusNextInput(index_1);
+			if (validateCardNumberInput(newCardNumberUnits_0) === "DEFAULT") onNextStep("CARD_NUMBER");
 		};
 		const handleCardNumberBlur = (index_2, input_1) => {
-			if (input_1.length === 0) {
-				updateInputStatus(index_2, "EMPTY");
-				return;
-			}
-			if (!checkLengthMatches(input_1, cardNumberFormat[index_2])) {
-				updateInputStatus(index_2, "INVALID_LENGTH");
-				return;
-			}
-			updateInputStatus(index_2, "DEFAULT");
+			updateInputStatus(index_2, validateCardNumberUnitInput(input_1.slice(0, cardNumberFormat[index_2]), cardNumberFormat[index_2]));
 		};
 		T0 = FormField;
 		t1 = "결제할 카드 번호를 입력해 주세요";
@@ -17112,6 +17204,7 @@ var CardNumberInputField = (t0) => {
 			autoFocus: index_3 === 0,
 			ref: registerInput(index_3),
 			placeholder: getCardNumberPlaceholder(maxLength),
+			inputMode: "numeric",
 			maxLength,
 			fullWidth: true,
 			value: cardNumberUnits[index_3],
@@ -17170,11 +17263,14 @@ function _temp$1() {
 function _temp2$1(inputStatus_0) {
 	return inputStatus_0 !== "DEFAULT";
 }
+//#endregion
+//#region src/components/CardPasswordInputField/constants.ts
+var PASSWORD_MAX_LENGTH = CARD_FIELD_LENGTH.PASSWORD;
 var HELPER_MESSAGE$1 = {
 	DEFAULT: "",
 	NOT_NUMBER: "숫자만 입력 가능합니다.",
 	EMPTY: "비밀번호를 입력해 주세요.",
-	INVALID_LENGTH: `숫자 2자리를 모두 입력해 주세요.`
+	INVALID_LENGTH: `숫자 ${PASSWORD_MAX_LENGTH}자리를 모두 입력해 주세요.`
 };
 //#endregion
 //#region src/components/CardPasswordInputField/CardPasswordInputField.tsx
@@ -17185,12 +17281,14 @@ var CardPasswordInputField = (t0) => {
 	let t1;
 	if ($[0] !== onChange) {
 		t1 = (input) => {
-			if (!checkIsOnlyDigits(input)) {
+			const nextPassword = input.slice(0, PASSWORD_MAX_LENGTH);
+			const validationStatus = validatePasswordInput(nextPassword);
+			onChange(nextPassword);
+			if (validationStatus === "NOT_NUMBER") {
 				setStatus("NOT_NUMBER");
 				return;
 			}
 			setStatus("DEFAULT");
-			onChange(input.slice(0, 2));
 		};
 		$[0] = onChange;
 		$[1] = t1;
@@ -17199,15 +17297,7 @@ var CardPasswordInputField = (t0) => {
 	let t2;
 	if ($[2] === Symbol.for("react.memo_cache_sentinel")) {
 		t2 = (input_0) => {
-			if (input_0.length === 0) {
-				setStatus("EMPTY");
-				return;
-			}
-			if (!checkLengthMatches(input_0, 2)) {
-				setStatus("INVALID_LENGTH");
-				return;
-			}
-			setStatus("DEFAULT");
+			setStatus(validatePasswordInput(input_0.slice(0, PASSWORD_MAX_LENGTH)));
 		};
 		$[2] = t2;
 	} else t2 = $[2];
@@ -17237,7 +17327,8 @@ var CardPasswordInputField = (t0) => {
 			autoFocus: true,
 			placeholder: "••",
 			type: "password",
-			maxLength: 2,
+			inputMode: "numeric",
+			maxLength: PASSWORD_MAX_LENGTH,
 			fullWidth: true,
 			value: password,
 			onChange: t4,
@@ -17264,14 +17355,18 @@ var CardPasswordInputField = (t0) => {
 	} else t8 = $[12];
 	return t8;
 };
+//#endregion
+//#region src/components/CardValidityPeriodInputField/constants.ts
+var MONTH_MAX_LENGTH = CARD_FIELD_LENGTH.VALIDITY_MONTH;
+var YEAR_MAX_LENGTH = CARD_FIELD_LENGTH.VALIDITY_YEAR;
 var HELPER_MESSAGE = {
 	DEFAULT: "",
 	NOT_NUMBER: "숫자만 입력 가능합니다.",
 	INVALID_MONTH_RANGE: "월은 1부터 12 사이의 숫자로 입력해 주세요.",
 	EMPTY_MONTH: "만료월을 입력해 주세요.",
 	EMPTY_YEAR: "만료년을 입력해 주세요.",
-	INVALID_MONTH_LENGTH: `만료월을 2자리 숫자로 입력해 주세요.`,
-	INVALID_YEAR_LENGTH: `만료년을 2자리 숫자로 입력해 주세요.`,
+	INVALID_MONTH_LENGTH: `만료월을 ${MONTH_MAX_LENGTH}자리 숫자로 입력해 주세요.`,
+	INVALID_YEAR_LENGTH: `만료년을 ${YEAR_MAX_LENGTH}자리 숫자로 입력해 주세요.`,
 	EXPIRED_VALIDITY_PERIOD: "만료된 유효기간입니다."
 };
 //#endregion
@@ -17281,31 +17376,28 @@ var INPUTS_STATUSES = {
 	year: "DEFAULT"
 };
 var CardValidityPeriodInputField = (t0) => {
-	const $ = (0, import_compiler_runtime.c)(33);
+	const $ = (0, import_compiler_runtime.c)(39);
 	const { validityPeriod, onChange, onNextStep } = t0;
 	const [status, setStatus] = (0, import_react.useState)(INPUTS_STATUSES);
 	const { registerInput, focusNextInput } = useInputFocus();
 	let t1;
 	if ($[0] !== focusNextInput || $[1] !== onChange || $[2] !== validityPeriod) {
 		t1 = (input) => {
-			if (!checkIsOnlyDigits(input)) {
-				setStatus(_temp);
-				return;
-			}
-			if (checkLengthMatches(input, 2) && !validateMonthRange(+input)) {
-				setStatus(_temp2);
-				return;
-			}
-			if (checkLengthMatches(validityPeriod.year, 2) && checkLengthMatches(input, 2) && checkExpiredValidityPeriod(input, validityPeriod.year)) {
-				setStatus(_temp3);
-				return;
-			}
+			const nextMonth = input.slice(0, MONTH_MAX_LENGTH);
+			const validationStatus = validateExpiryMonth(nextMonth, validityPeriod.year);
 			onChange({
 				...validityPeriod,
-				month: input.slice(0, 2)
+				month: nextMonth
 			});
-			setStatus(_temp4);
-			if (checkLengthMatches(input, 2)) focusNextInput(0);
+			if (validationStatus === "NOT_NUMBER" || validationStatus === "INVALID_MONTH_RANGE" || validationStatus === "EXPIRED_VALIDITY_PERIOD") {
+				setStatus((prev) => ({
+					...prev,
+					month: validationStatus
+				}));
+				return;
+			}
+			setStatus(_temp);
+			if (validationStatus === "DEFAULT") focusNextInput(0);
 		};
 		$[0] = focusNextInput;
 		$[1] = onChange;
@@ -17316,20 +17408,21 @@ var CardValidityPeriodInputField = (t0) => {
 	let t2;
 	if ($[4] !== onChange || $[5] !== onNextStep || $[6] !== validityPeriod) {
 		t2 = (input_0) => {
-			if (!checkIsOnlyDigits(input_0)) {
-				setStatus(_temp5);
-				return;
-			}
-			if (checkLengthMatches(validityPeriod.month, 2) && checkLengthMatches(input_0, 2) && checkExpiredValidityPeriod(validityPeriod.month, input_0)) {
-				setStatus(_temp6);
-				return;
-			}
+			const nextYear = input_0.slice(0, YEAR_MAX_LENGTH);
+			const validationStatus_0 = validateExpiryYear(nextYear, validityPeriod.month);
 			onChange({
 				...validityPeriod,
-				year: input_0.slice(0, 2)
+				year: nextYear
 			});
-			setStatus(_temp7);
-			if (checkLengthMatches(input_0, 2)) onNextStep();
+			if (validationStatus_0 === "NOT_NUMBER" || validationStatus_0 === "EXPIRED_VALIDITY_PERIOD") {
+				setStatus((prev_1) => ({
+					...prev_1,
+					year: validationStatus_0
+				}));
+				return;
+			}
+			setStatus(_temp2);
+			if (validationStatus_0 === "DEFAULT") onNextStep("VALIDITY_PERIOD");
 		};
 		$[4] = onChange;
 		$[5] = onNextStep;
@@ -17338,106 +17431,109 @@ var CardValidityPeriodInputField = (t0) => {
 	} else t2 = $[7];
 	const handleYearChange = t2;
 	let t3;
-	if ($[8] === Symbol.for("react.memo_cache_sentinel")) {
+	if ($[8] !== validityPeriod.month || $[9] !== validityPeriod.year) {
 		t3 = (key, input_1) => {
-			if (input_1.length === 0) {
-				setStatus((prev_6) => ({
-					...prev_6,
-					[key]: key === "month" ? "EMPTY_MONTH" : "EMPTY_YEAR"
+			if (key === "month") {
+				const nextMonth_0 = input_1.slice(0, MONTH_MAX_LENGTH);
+				setStatus((prev_3) => ({
+					...prev_3,
+					month: validateExpiryMonth(nextMonth_0, validityPeriod.year)
 				}));
 				return;
 			}
-			if (!checkLengthMatches(input_1, key === "month" ? 2 : 2)) {
-				setStatus((prev_7) => ({
-					...prev_7,
-					[key]: key === "month" ? "INVALID_MONTH_LENGTH" : "INVALID_YEAR_LENGTH"
-				}));
-				return;
-			}
-			setStatus((prev_8) => ({
-				...prev_8,
-				[key]: "DEFAULT"
+			const nextYear_0 = input_1.slice(0, YEAR_MAX_LENGTH);
+			setStatus((prev_4) => ({
+				...prev_4,
+				year: validateExpiryYear(nextYear_0, validityPeriod.month)
 			}));
 		};
-		$[8] = t3;
-	} else t3 = $[8];
+		$[8] = validityPeriod.month;
+		$[9] = validityPeriod.year;
+		$[10] = t3;
+	} else t3 = $[10];
 	const handleValidityPeriodBlur = t3;
 	const t4 = status.month !== "DEFAULT" ? HELPER_MESSAGE[status.month] : HELPER_MESSAGE[status.year];
 	let t5;
-	if ($[9] !== registerInput) {
+	if ($[11] !== registerInput) {
 		t5 = registerInput(0);
-		$[9] = registerInput;
-		$[10] = t5;
-	} else t5 = $[10];
+		$[11] = registerInput;
+		$[12] = t5;
+	} else t5 = $[12];
 	let t6;
-	if ($[11] !== handleMonthChange) {
+	if ($[13] !== handleMonthChange) {
 		t6 = (e) => handleMonthChange(e.target.value);
-		$[11] = handleMonthChange;
-		$[12] = t6;
-	} else t6 = $[12];
+		$[13] = handleMonthChange;
+		$[14] = t6;
+	} else t6 = $[14];
 	let t7;
-	if ($[13] === Symbol.for("react.memo_cache_sentinel")) {
+	if ($[15] !== handleValidityPeriodBlur) {
 		t7 = (e_0) => handleValidityPeriodBlur("month", e_0.target.value);
-		$[13] = t7;
-	} else t7 = $[13];
+		$[15] = handleValidityPeriodBlur;
+		$[16] = t7;
+	} else t7 = $[16];
 	const t8 = status.month === "DEFAULT" ? "default" : "error";
 	let t9;
-	if ($[14] !== t5 || $[15] !== t6 || $[16] !== t8 || $[17] !== validityPeriod.month) {
+	if ($[17] !== t5 || $[18] !== t6 || $[19] !== t7 || $[20] !== t8 || $[21] !== validityPeriod.month) {
 		t9 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
 			autoFocus: true,
 			ref: t5,
 			placeholder: "MM",
-			maxLength: 2,
+			inputMode: "numeric",
+			maxLength: MONTH_MAX_LENGTH,
 			fullWidth: true,
 			value: validityPeriod.month,
 			onChange: t6,
 			onBlur: t7,
 			state: t8
 		});
-		$[14] = t5;
-		$[15] = t6;
-		$[16] = t8;
-		$[17] = validityPeriod.month;
-		$[18] = t9;
-	} else t9 = $[18];
+		$[17] = t5;
+		$[18] = t6;
+		$[19] = t7;
+		$[20] = t8;
+		$[21] = validityPeriod.month;
+		$[22] = t9;
+	} else t9 = $[22];
 	let t10;
-	if ($[19] !== registerInput) {
+	if ($[23] !== registerInput) {
 		t10 = registerInput(1);
-		$[19] = registerInput;
-		$[20] = t10;
-	} else t10 = $[20];
+		$[23] = registerInput;
+		$[24] = t10;
+	} else t10 = $[24];
 	let t11;
-	if ($[21] !== handleYearChange) {
+	if ($[25] !== handleYearChange) {
 		t11 = (e_1) => handleYearChange(e_1.target.value);
-		$[21] = handleYearChange;
-		$[22] = t11;
-	} else t11 = $[22];
+		$[25] = handleYearChange;
+		$[26] = t11;
+	} else t11 = $[26];
 	let t12;
-	if ($[23] === Symbol.for("react.memo_cache_sentinel")) {
+	if ($[27] !== handleValidityPeriodBlur) {
 		t12 = (e_2) => handleValidityPeriodBlur("year", e_2.target.value);
-		$[23] = t12;
-	} else t12 = $[23];
+		$[27] = handleValidityPeriodBlur;
+		$[28] = t12;
+	} else t12 = $[28];
 	const t13 = status.year === "DEFAULT" ? "default" : "error";
 	let t14;
-	if ($[24] !== t10 || $[25] !== t11 || $[26] !== t13 || $[27] !== validityPeriod.year) {
+	if ($[29] !== t10 || $[30] !== t11 || $[31] !== t12 || $[32] !== t13 || $[33] !== validityPeriod.year) {
 		t14 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
 			ref: t10,
 			placeholder: "YY",
-			maxLength: 2,
+			inputMode: "numeric",
+			maxLength: YEAR_MAX_LENGTH,
 			fullWidth: true,
 			value: validityPeriod.year,
 			onChange: t11,
 			onBlur: t12,
 			state: t13
 		});
-		$[24] = t10;
-		$[25] = t11;
-		$[26] = t13;
-		$[27] = validityPeriod.year;
-		$[28] = t14;
-	} else t14 = $[28];
+		$[29] = t10;
+		$[30] = t11;
+		$[31] = t12;
+		$[32] = t13;
+		$[33] = validityPeriod.year;
+		$[34] = t14;
+	} else t14 = $[34];
 	let t15;
-	if ($[29] !== t14 || $[30] !== t4 || $[31] !== t9) {
+	if ($[35] !== t14 || $[36] !== t4 || $[37] !== t9) {
 		t15 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormField, {
 			title: "카드 유효기간을 입력해 주세요",
 			caption: "월/년도(MMYY)를 순서대로 입력해 주세요.",
@@ -17445,52 +17541,22 @@ var CardValidityPeriodInputField = (t0) => {
 			helperMessage: t4,
 			children: [t9, t14]
 		});
-		$[29] = t14;
-		$[30] = t4;
-		$[31] = t9;
-		$[32] = t15;
-	} else t15 = $[32];
+		$[35] = t14;
+		$[36] = t4;
+		$[37] = t9;
+		$[38] = t15;
+	} else t15 = $[38];
 	return t15;
 };
-function _temp(prev) {
-	return {
-		...prev,
-		month: "NOT_NUMBER"
-	};
-}
-function _temp2(prev_0) {
+function _temp(prev_0) {
 	return {
 		...prev_0,
-		month: "INVALID_MONTH_RANGE"
-	};
-}
-function _temp3(prev_1) {
-	return {
-		...prev_1,
-		month: "EXPIRED_VALIDITY_PERIOD"
-	};
-}
-function _temp4(prev_2) {
-	return {
-		...prev_2,
 		month: "DEFAULT"
 	};
 }
-function _temp5(prev_3) {
+function _temp2(prev_2) {
 	return {
-		...prev_3,
-		year: "NOT_NUMBER"
-	};
-}
-function _temp6(prev_4) {
-	return {
-		...prev_4,
-		year: "EXPIRED_VALIDITY_PERIOD"
-	};
-}
-function _temp7(prev_5) {
-	return {
-		...prev_5,
+		...prev_2,
 		year: "DEFAULT"
 	};
 }
@@ -17523,9 +17589,10 @@ var useFormStep = (formStep, firstStepKey) => {
 	const step = formStep[stepKey].order;
 	let t0;
 	if ($[0] !== formStep || $[1] !== stepKey) {
-		t0 = () => {
+		t0 = (currentStepKey) => {
+			if (currentStepKey !== stepKey) return;
 			const nextStepKey = formStep[stepKey].next;
-			if (!nextStepKey) return;
+			if (nextStepKey === null) return;
 			setStepKey(nextStepKey);
 		};
 		$[0] = formStep;
@@ -17554,69 +17621,10 @@ var useFormStep = (formStep, firstStepKey) => {
 	return t2;
 };
 //#endregion
-//#region src/constants/addCardForm.ts
-var ADD_CARD_FORM_STEP = {
-	CARD_NUMBER: {
-		order: 1,
-		next: "COMPANY"
-	},
-	COMPANY: {
-		order: 2,
-		next: "VALIDITY_PERIOD"
-	},
-	VALIDITY_PERIOD: {
-		order: 3,
-		next: "CVC"
-	},
-	CVC: {
-		order: 4,
-		next: "PASSWORD"
-	},
-	PASSWORD: {
-		order: 5,
-		next: null
-	}
-};
-//#endregion
 //#region src/constants/routes.ts
 var ROUTE_PATH = {
 	ADD_CARD: "/",
 	ADD_CARD_COMPLETE: "/complete"
-};
-//#endregion
-//#region src/hooks/useCardNavigation.ts
-var useCardNavigation = () => {
-	const $ = (0, import_compiler_runtime.c)(7);
-	const navigate = useNavigate();
-	let t0;
-	if ($[0] !== navigate) {
-		t0 = () => {
-			navigate(ROUTE_PATH.ADD_CARD);
-		};
-		$[0] = navigate;
-		$[1] = t0;
-	} else t0 = $[1];
-	const goToAddCardPage = t0;
-	let t1;
-	if ($[2] !== navigate) {
-		t1 = (state) => {
-			navigate(ROUTE_PATH.ADD_CARD_COMPLETE, { state });
-		};
-		$[2] = navigate;
-		$[3] = t1;
-	} else t1 = $[3];
-	const goToAddCardCompletePage = t1;
-	let t2;
-	if ($[4] !== goToAddCardCompletePage || $[5] !== goToAddCardPage) {
-		t2 = {
-			goToAddCardPage,
-			goToAddCardCompletePage
-		};
-		$[4] = goToAddCardCompletePage;
-		$[5] = goToAddCardPage;
-		$[6] = t2;
-	} else t2 = $[6];
-	return t2;
 };
 //#endregion
 //#region src/pages/AddNewCardPage.tsx
@@ -17638,7 +17646,7 @@ var AddNewCardPage = () => {
 	const [CVC, setCVC] = (0, import_react.useState)("");
 	const [password, setPassword] = (0, import_react.useState)("");
 	const { goToNextStep, isStepVisible } = useFormStep(ADD_CARD_FORM_STEP, "CARD_NUMBER");
-	const { goToAddCardCompletePage } = useCardNavigation();
+	const navigate = useNavigate();
 	let t0;
 	if ($[0] !== CVC || $[1] !== cardCompany || $[2] !== cardNumber || $[3] !== password || $[4] !== validityPeriod) {
 		t0 = validateCardForm(cardNumber, cardCompany, validityPeriod, CVC, password);
@@ -17651,17 +17659,17 @@ var AddNewCardPage = () => {
 	} else t0 = $[5];
 	const isFormValid = t0;
 	let t1;
-	if ($[6] !== cardCompany?.name || $[7] !== cardNumber[0] || $[8] !== goToAddCardCompletePage) {
+	if ($[6] !== cardCompany?.name || $[7] !== cardNumber[0] || $[8] !== navigate) {
 		t1 = (event) => {
 			event.preventDefault();
-			goToAddCardCompletePage({
+			navigate(ROUTE_PATH.ADD_CARD_COMPLETE, { state: {
 				cardNumberPrefix: cardNumber[0],
 				cardCompanyName: cardCompany?.name ?? ""
-			});
+			} });
 		};
 		$[6] = cardCompany?.name;
 		$[7] = cardNumber[0];
-		$[8] = goToAddCardCompletePage;
+		$[8] = navigate;
 		$[9] = t1;
 	} else t1 = $[9];
 	const handleCardFormSubmit = t1;
@@ -17800,7 +17808,7 @@ var completeCheckImage_default = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA
 //#region src/pages/AddCardCompletePage.tsx
 var AddCardCompletePage = () => {
 	const $ = (0, import_compiler_runtime.c)(10);
-	const { goToAddCardPage } = useCardNavigation();
+	const navigate = useNavigate();
 	const { state } = useLocation();
 	const { cardNumberPrefix, cardCompanyName } = state;
 	let t0;
@@ -17830,12 +17838,12 @@ var AddCardCompletePage = () => {
 		$[4] = t2;
 	} else t2 = $[4];
 	let t3;
-	if ($[5] !== goToAddCardPage) {
+	if ($[5] !== navigate) {
 		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-			onClick: goToAddCardPage,
+			onClick: () => navigate(ROUTE_PATH.ADD_CARD),
 			children: "확인"
 		});
-		$[5] = goToAddCardPage;
+		$[5] = navigate;
 		$[6] = t3;
 	} else t3 = $[6];
 	let t4;
