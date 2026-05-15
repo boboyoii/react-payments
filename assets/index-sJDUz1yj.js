@@ -16892,6 +16892,10 @@ var OptionButton = styled.button`
   font-size: 0.67rem;
   text-align: left;
   cursor: pointer;
+
+  &:hover {
+    background-color: ${COLOR_PALETTE["GREY-100"]};
+  }
 `;
 //#endregion
 //#region src/constants/cardForm.ts
