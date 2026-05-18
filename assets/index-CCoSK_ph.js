@@ -9933,18 +9933,10 @@ var require_react_compiler_runtime_production = /* @__PURE__ */ __commonJSMin(((
 	};
 }));
 //#endregion
-//#region node_modules/react/compiler-runtime.js
-/**
-* Copyright (c) Meta Platforms, Inc. and affiliates.
-*
-* This source code is licensed under the MIT license found in the
-* LICENSE file in the root directory of this source tree.
-*/
-var require_compiler_runtime = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	module.exports = require_react_compiler_runtime_production();
-}));
-//#endregion
 //#region \0vite/preload-helper.js
+var import_compiler_runtime = (/* @__PURE__ */ __commonJSMin(((exports, module) => {
+	module.exports = require_react_compiler_runtime_production();
+})))();
 var scriptRel = "modulepreload";
 var assetsURL = function(dep) {
 	return "/react-payments/" + dep;
@@ -13933,6 +13925,30 @@ function DataRoutes2({ routes, manifest, future, state, isStatic, onError }) {
 		future
 	});
 }
+function Navigate({ to, replace: replace2, state, relative }) {
+	invariant(useInRouterContext(), `<Navigate> may be used only in the context of a <Router> component.`);
+	let { static: isStatic } = import_react.useContext(NavigationContext);
+	warning(!isStatic, `<Navigate> must not be used on the initial render in a <StaticRouter>. This is a no-op, but you should modify your code so the <Navigate> is only ever rendered in response to some user interaction or state change.`);
+	let { matches } = import_react.useContext(RouteContext);
+	let { pathname: locationPathname } = useLocation();
+	let navigate = useNavigate();
+	let path = resolveTo(to, getResolveToMatches(matches), locationPathname, relative === "path");
+	let jsonPath = JSON.stringify(path);
+	import_react.useEffect(() => {
+		navigate(JSON.parse(jsonPath), {
+			replace: replace2,
+			state,
+			relative
+		});
+	}, [
+		navigate,
+		jsonPath,
+		relative,
+		replace2,
+		state
+	]);
+	return null;
+}
 function Router({ basename: basenameProp = "/", children = null, location: locationProp, navigationType = "POP", navigator, static: staticProp = false, useTransitions }) {
 	invariant(!useInRouterContext(), `You cannot render a <Router> inside another <Router>. You should never have more than one in your app.`);
 	let basename = basenameProp.replace(/^\/*/, "/");
@@ -14870,7 +14886,6 @@ function useViewTransitionState(to, { relative } = {}) {
 }
 //#endregion
 //#region src/constants/cardBrands.ts
-var import_compiler_runtime = require_compiler_runtime();
 var DEFAULT_CARD_NUMBER_FORMAT = [
 	4,
 	4,
@@ -14935,11 +14950,11 @@ var CARD_BRANDS = {
 //#endregion
 //#region src/utils/card.ts
 var detectCardBrand = (cardNumber) => {
-	if (checkPrefixMatches(`${cardNumber[0]}`, CARD_BRANDS.Visa.prefixes)) return "Visa";
-	if (checkPrefixRangeMatches(`${cardNumber[0]}`, CARD_BRANDS.MasterCard.prefixRanges)) return "MasterCard";
-	if (checkPrefixMatches(`${cardNumber[0]}`, CARD_BRANDS.AMEX.prefixes)) return "AMEX";
-	if (checkPrefixMatches(`${cardNumber[0]}`, CARD_BRANDS.Diners.prefixes)) return "Diners";
-	if (checkPrefixRangeMatches(`${cardNumber[0]}${cardNumber[1]}`, CARD_BRANDS.UnionPay.prefixRanges)) return "UnionPay";
+	if (checkPrefixMatches(cardNumber, CARD_BRANDS.Visa.prefixes)) return "Visa";
+	if (checkPrefixRangeMatches(cardNumber, CARD_BRANDS.MasterCard.prefixRanges)) return "MasterCard";
+	if (checkPrefixMatches(cardNumber, CARD_BRANDS.AMEX.prefixes)) return "AMEX";
+	if (checkPrefixMatches(cardNumber, CARD_BRANDS.Diners.prefixes)) return "Diners";
+	if (checkPrefixRangeMatches(cardNumber, CARD_BRANDS.UnionPay.prefixRanges)) return "UnionPay";
 	return null;
 };
 var checkPrefixMatches = (cardNumber, prefixes) => {
@@ -16369,8 +16384,11 @@ var COLOR_PALETTE = {
 	LABEL: "#0a0d13",
 	YELLOW: "#ddcd78",
 	"GREY-100": "#F5F5F5",
+	"GREY-200": "#EBEBEB",
+	"GREY-300": "#D9D9D9",
 	"GREY-400": "#acacac",
-	"GREY-500": "#8b95a1",
+	"GREY-500": "#8C8C8C",
+	"GREY-600": "#8b95a1",
 	"BLACK-900": "#000000",
 	"BLACK-800": "#333",
 	"BLACK-700": "#353C49",
@@ -16381,47 +16399,55 @@ var COLOR_PALETTE = {
 //#region src/constants/cardCompanies.ts
 var CARD_COMPANIES = [
 	{
+		issuerCode: "31",
 		name: "BC카드",
 		color: "#F04651"
 	},
 	{
+		issuerCode: "41",
 		name: "신한카드",
 		color: "#0046FF"
 	},
 	{
+		issuerCode: "15",
 		name: "카카오뱅크",
 		color: "#FFE600"
 	},
 	{
+		issuerCode: "61",
 		name: "현대카드",
 		color: "#000000"
 	},
 	{
+		issuerCode: "W1",
 		name: "우리카드",
 		color: "#007BC8"
 	},
 	{
+		issuerCode: "71",
 		name: "롯데카드",
 		color: "#ED1C24"
 	},
 	{
+		issuerCode: "21",
 		name: "하나카드",
 		color: "#009490"
 	},
 	{
+		issuerCode: "11",
 		name: "국민카드",
 		color: "#6A6056"
 	}
 ];
 //#endregion
-//#region src/components/Card/Card.tsx
+//#region src/components/CardRegister/Card/Card.tsx
 var Card = (t0) => {
 	const $ = (0, import_compiler_runtime.c)(25);
 	const { cardNumberUnits, cardCompany, validityPeriod } = t0;
 	let cardBrand;
 	let t1;
 	if ($[0] !== cardNumberUnits) {
-		cardBrand = detectCardBrand(cardNumberUnits);
+		cardBrand = detectCardBrand(cardNumberUnits.join(""));
 		t1 = getCardNumberFormat(cardBrand);
 		$[0] = cardNumberUnits;
 		$[1] = cardBrand;
@@ -16611,14 +16637,14 @@ var CardValidityPeriodUnit = styled.span`
   color: ${COLOR_PALETTE.WHITE};
   letter-spacing: 16%;
 `;
-function _temp$3(_, index_0) {
+function _temp$4(_, index_0) {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MaskingImg, {
 		src: MaskingImg_default,
 		alt: "MaskingImg"
 	}, index_0);
 }
 function _temp2$2(cardNumberUnit, index) {
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardNumberUnit, { children: index < 2 ? cardNumberUnit : Array.from({ length: cardNumberUnit.length }).map(_temp$3) }, index);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardNumberUnit, { children: index < 2 ? cardNumberUnit : Array.from({ length: cardNumberUnit.length }).map(_temp$4) }, index);
 }
 //#endregion
 //#region src/assets/arrowDownIcon.svg
@@ -16668,7 +16694,7 @@ var FormField = (t0) => {
 	} else t7 = $[12];
 	let t8;
 	if ($[13] !== t2 || $[14] !== t3 || $[15] !== t6 || $[16] !== t7) {
-		t8 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Container, { children: [
+		t8 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Container$4, { children: [
 			t2,
 			t3,
 			t6,
@@ -16682,7 +16708,7 @@ var FormField = (t0) => {
 	} else t8 = $[17];
 	return t8;
 };
-var Container = styled.section`
+var Container$4 = styled.section`
   position: relative;
   width: 100%;
 `;
@@ -16721,7 +16747,7 @@ var HelperMessage = styled.p`
   color: ${COLOR_PALETTE.ERROR};
 `;
 //#endregion
-//#region src/components/CardCompanySelector/CardCompanySelector.tsx
+//#region src/components/CardRegister/CardCompanySelector/CardCompanySelector.tsx
 function CardCompanySelector(t0) {
 	const $ = (0, import_compiler_runtime.c)(20);
 	const { cardCompany, onSelect, onNextStep } = t0;
@@ -16730,7 +16756,7 @@ function CardCompanySelector(t0) {
 	let t1;
 	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
 		t1 = () => {
-			setIsOpen(_temp$2);
+			setIsOpen(_temp$3);
 		};
 		$[0] = t1;
 	} else t1 = $[0];
@@ -16834,7 +16860,7 @@ function CardCompanySelector(t0) {
 	} else t11 = $[19];
 	return t11;
 }
-function _temp$2(prevIsOpen) {
+function _temp$3(prevIsOpen) {
 	return !prevIsOpen;
 }
 var SelectWrapper = styled.div`
@@ -16899,7 +16925,7 @@ var OptionButton = styled.button`
 `;
 //#endregion
 //#region src/constants/cardForm.ts
-var ADD_CARD_FORM_STEP = {
+var CARD_REGISTER_FORM_STEP = {
 	CARD_NUMBER: {
 		order: 1,
 		next: "COMPANY"
@@ -16928,7 +16954,7 @@ var CARD_FIELD_LENGTH = {
 	VALIDITY_YEAR: 2
 };
 //#endregion
-//#region src/components/CardCVCInputField/constants.ts
+//#region src/components/CardRegister/CardCVCInputField/constants.ts
 var CVC_MAX_LENGTH = CARD_FIELD_LENGTH.CVC;
 var HELPER_MESSAGE$3 = {
 	DEFAULT: "",
@@ -16974,7 +17000,7 @@ var checkExpiredValidityPeriod = (month, year) => {
 	return inputYear < currentYear || inputYear === currentYear && inputMonth < currentMonth;
 };
 var validateCardNumberInput = (cardNumber) => {
-	return getCardNumberFormat(detectCardBrand(cardNumber)).map((expectedLength, index) => validateCardNumberUnitInput(cardNumber[index] ?? "", expectedLength)).find((status) => status !== "DEFAULT") ?? "DEFAULT";
+	return getCardNumberFormat(detectCardBrand(cardNumber.join(""))).map((expectedLength, index) => validateCardNumberUnitInput(cardNumber[index] ?? "", expectedLength)).find((status) => status !== "DEFAULT") ?? "DEFAULT";
 };
 var validateCardNumberUnitInput = (input, expectedLength) => {
 	if (input.length === 0) return "EMPTY";
@@ -17019,11 +17045,52 @@ var validateCardForm = (cardNumber, cardCompany, { month, year }, CVC, password)
 	return true;
 };
 //#endregion
-//#region src/components/CardCVCInputField/CardCVCInputField.tsx
+//#region src/hooks/useInputFocus.ts
+var useInputFocus = () => {
+	const $ = (0, import_compiler_runtime.c)(4);
+	let t0;
+	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
+		t0 = [];
+		$[0] = t0;
+	} else t0 = $[0];
+	const inputRefs = (0, import_react.useRef)(t0);
+	let t1;
+	if ($[1] === Symbol.for("react.memo_cache_sentinel")) {
+		t1 = (index) => (element) => {
+			if (element) inputRefs.current[index] = element;
+		};
+		$[1] = t1;
+	} else t1 = $[1];
+	const registerInput = t1;
+	let t2;
+	if ($[2] === Symbol.for("react.memo_cache_sentinel")) {
+		t2 = (index_0) => {
+			inputRefs.current[index_0 + 1]?.focus();
+		};
+		$[2] = t2;
+	} else t2 = $[2];
+	const focusNextInput = t2;
+	let t3;
+	if ($[3] === Symbol.for("react.memo_cache_sentinel")) {
+		const focusInput = (index_1) => {
+			inputRefs.current[index_1]?.focus();
+		};
+		t3 = {
+			registerInput,
+			focusNextInput,
+			focusInput
+		};
+		$[3] = t3;
+	} else t3 = $[3];
+	return t3;
+};
+//#endregion
+//#region src/components/CardRegister/CardCVCInputField/CardCVCInputField.tsx
 var CardCVCInputField = (t0) => {
-	const $ = (0, import_compiler_runtime.c)(14);
-	const { CVC, onChange, onNextStep } = t0;
+	const $ = (0, import_compiler_runtime.c)(21);
+	const { CVC, onChange, onNextStep, serverErrorMessage, shouldFocus } = t0;
 	const [status, setStatus] = (0, import_react.useState)("DEFAULT");
+	const { registerInput, focusInput } = useInputFocus();
 	let t1;
 	if ($[0] !== onChange || $[1] !== onNextStep) {
 		t1 = (input) => {
@@ -17050,59 +17117,83 @@ var CardCVCInputField = (t0) => {
 		$[3] = t2;
 	} else t2 = $[3];
 	const handleCVCBlur = t2;
-	const t3 = HELPER_MESSAGE$3[status];
+	let t3;
 	let t4;
-	if ($[4] !== handleCVCChange) {
-		t4 = (e) => {
+	if ($[4] !== focusInput || $[5] !== shouldFocus) {
+		t3 = () => {
+			if (shouldFocus) focusInput(0);
+		};
+		t4 = [focusInput, shouldFocus];
+		$[4] = focusInput;
+		$[5] = shouldFocus;
+		$[6] = t3;
+		$[7] = t4;
+	} else {
+		t3 = $[6];
+		t4 = $[7];
+	}
+	(0, import_react.useEffect)(t3, t4);
+	const t5 = serverErrorMessage ?? HELPER_MESSAGE$3[status];
+	let t6;
+	if ($[8] !== registerInput) {
+		t6 = registerInput(0);
+		$[8] = registerInput;
+		$[9] = t6;
+	} else t6 = $[9];
+	let t7;
+	if ($[10] !== handleCVCChange) {
+		t7 = (e) => {
 			const input_1 = e.target.value;
 			handleCVCChange(input_1);
 		};
-		$[4] = handleCVCChange;
-		$[5] = t4;
-	} else t4 = $[5];
-	let t5;
-	if ($[6] === Symbol.for("react.memo_cache_sentinel")) {
-		t5 = (e_0) => {
+		$[10] = handleCVCChange;
+		$[11] = t7;
+	} else t7 = $[11];
+	let t8;
+	if ($[12] === Symbol.for("react.memo_cache_sentinel")) {
+		t8 = (e_0) => {
 			const input_2 = e_0.target.value;
 			handleCVCBlur(input_2);
 		};
-		$[6] = t5;
-	} else t5 = $[6];
-	const t6 = status === "DEFAULT" ? "default" : "error";
-	let t7;
-	if ($[7] !== CVC || $[8] !== t4 || $[9] !== t6) {
-		t7 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
+		$[12] = t8;
+	} else t8 = $[12];
+	const t9 = serverErrorMessage || status !== "DEFAULT" ? "error" : "default";
+	let t10;
+	if ($[13] !== CVC || $[14] !== t6 || $[15] !== t7 || $[16] !== t9) {
+		t10 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
 			autoFocus: true,
+			ref: t6,
 			placeholder: "123",
 			inputMode: "numeric",
 			maxLength: CVC_MAX_LENGTH,
 			fullWidth: true,
 			value: CVC,
-			onChange: t4,
-			onBlur: t5,
-			state: t6
+			onChange: t7,
+			onBlur: t8,
+			state: t9
 		});
-		$[7] = CVC;
-		$[8] = t4;
-		$[9] = t6;
-		$[10] = t7;
-	} else t7 = $[10];
-	let t8;
-	if ($[11] !== t3 || $[12] !== t7) {
-		t8 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
+		$[13] = CVC;
+		$[14] = t6;
+		$[15] = t7;
+		$[16] = t9;
+		$[17] = t10;
+	} else t10 = $[17];
+	let t11;
+	if ($[18] !== t10 || $[19] !== t5) {
+		t11 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FormField, {
 			title: "CVC 번호를 입력해 주세요",
 			label: "CVC",
-			helperMessage: t3,
-			children: t7
+			helperMessage: t5,
+			children: t10
 		});
-		$[11] = t3;
-		$[12] = t7;
-		$[13] = t8;
-	} else t8 = $[13];
-	return t8;
+		$[18] = t10;
+		$[19] = t5;
+		$[20] = t11;
+	} else t11 = $[20];
+	return t11;
 };
 //#endregion
-//#region src/components/CardNumberInputField/constants.ts
+//#region src/components/CardRegister/CardNumberInputField/constants.ts
 var HELPER_MESSAGE$2 = {
 	DEFAULT: "",
 	NOT_NUMBER: "숫자만 입력 가능합니다.",
@@ -17110,38 +17201,7 @@ var HELPER_MESSAGE$2 = {
 	INVALID_LENGTH: `각 필드당 자릿 수를 모두 입력해 주세요.`
 };
 //#endregion
-//#region src/hooks/useInputFocus.ts
-var useInputFocus = () => {
-	const $ = (0, import_compiler_runtime.c)(3);
-	let t0;
-	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
-		t0 = [];
-		$[0] = t0;
-	} else t0 = $[0];
-	const inputRefs = (0, import_react.useRef)(t0);
-	let t1;
-	if ($[1] === Symbol.for("react.memo_cache_sentinel")) {
-		t1 = (index) => (element) => {
-			if (element) inputRefs.current[index] = element;
-		};
-		$[1] = t1;
-	} else t1 = $[1];
-	const registerInput = t1;
-	let t2;
-	if ($[2] === Symbol.for("react.memo_cache_sentinel")) {
-		const focusNextInput = (index_0) => {
-			inputRefs.current[index_0 + 1]?.focus();
-		};
-		t2 = {
-			registerInput,
-			focusNextInput
-		};
-		$[2] = t2;
-	} else t2 = $[2];
-	return t2;
-};
-//#endregion
-//#region src/components/CardNumberInputField/CardNumberInputField.tsx
+//#region src/components/CardRegister/CardNumberInputField/CardNumberInputField.tsx
 var INPUTS_STATUSES$1 = [
 	"DEFAULT",
 	"DEFAULT",
@@ -17149,126 +17209,112 @@ var INPUTS_STATUSES$1 = [
 	"DEFAULT"
 ];
 var CardNumberInputField = (t0) => {
-	const $ = (0, import_compiler_runtime.c)(20);
-	const { cardNumberUnits, onChange, onNextStep } = t0;
+	const $ = (0, import_compiler_runtime.c)(9);
+	const { cardNumberUnits, onChange, onNextStep, serverErrorMessage, shouldFocus } = t0;
 	const [status, setStatus] = (0, import_react.useState)(INPUTS_STATUSES$1);
-	const { registerInput, focusNextInput } = useInputFocus();
-	let T0;
+	const { registerInput, focusNextInput, focusInput } = useInputFocus();
+	const cardNumberFormat = getCardNumberFormat(detectCardBrand(cardNumberUnits.join("")));
 	let t1;
+	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
+		t1 = (index, inputStatus) => {
+			setStatus((prev) => {
+				const newInputsStatuses = [...prev];
+				newInputsStatuses[index] = inputStatus;
+				return newInputsStatuses;
+			});
+		};
+		$[0] = t1;
+	} else t1 = $[0];
+	const updateInputStatus = t1;
+	const updateCardNumberUnit = (index_0, input) => {
+		const newCardNumberUnits = [...cardNumberUnits];
+		newCardNumberUnits[index_0] = input.slice(0, cardNumberFormat[index_0]);
+		return newCardNumberUnits;
+	};
+	const handleCardNumberChange = (index_1, input_0) => {
+		const newCardNumberUnits_0 = updateCardNumberUnit(index_1, input_0);
+		const validationStatus = validateCardNumberUnitInput(newCardNumberUnits_0[index_1], cardNumberFormat[index_1]);
+		onChange(newCardNumberUnits_0);
+		if (validationStatus === "NOT_NUMBER") {
+			updateInputStatus(index_1, "NOT_NUMBER");
+			return;
+		}
+		updateInputStatus(index_1, "DEFAULT");
+		const newCardNumberFormat = getCardNumberFormat(detectCardBrand(newCardNumberUnits_0.join("")));
+		if (isFormatChanged(cardNumberFormat, newCardNumberFormat)) {
+			const reformattedUnits = updateCardNumberUnitsFormat(newCardNumberUnits_0, newCardNumberFormat);
+			onChange(reformattedUnits);
+			setStatus(reformattedUnits.map(_temp$2));
+		}
+		if (validationStatus === "DEFAULT") focusNextInput(index_1);
+		if (validateCardNumberInput(newCardNumberUnits_0) === "DEFAULT") onNextStep("CARD_NUMBER");
+	};
+	const handleCardNumberBlur = (index_2, input_1) => {
+		updateInputStatus(index_2, validateCardNumberUnitInput(input_1.slice(0, cardNumberFormat[index_2]), cardNumberFormat[index_2]));
+	};
 	let t2;
 	let t3;
-	let t4;
-	let t5;
-	if ($[0] !== cardNumberUnits || $[1] !== focusNextInput || $[2] !== onChange || $[3] !== onNextStep || $[4] !== registerInput || $[5] !== status) {
-		const cardNumberFormat = getCardNumberFormat(detectCardBrand(cardNumberUnits));
-		let t6;
-		if ($[12] === Symbol.for("react.memo_cache_sentinel")) {
-			t6 = (index, inputStatus) => {
-				setStatus((prev) => {
-					const newInputsStatuses = [...prev];
-					newInputsStatuses[index] = inputStatus;
-					return newInputsStatuses;
-				});
-			};
-			$[12] = t6;
-		} else t6 = $[12];
-		const updateInputStatus = t6;
-		const updateCardNumberUnit = (index_0, input) => {
-			const newCardNumberUnits = [...cardNumberUnits];
-			newCardNumberUnits[index_0] = input.slice(0, cardNumberFormat[index_0]);
-			return newCardNumberUnits;
+	if ($[1] !== focusInput || $[2] !== shouldFocus) {
+		t2 = () => {
+			if (shouldFocus) focusInput(0);
 		};
-		const handleCardNumberChange = (index_1, input_0) => {
-			const newCardNumberUnits_0 = updateCardNumberUnit(index_1, input_0);
-			const validationStatus = validateCardNumberUnitInput(newCardNumberUnits_0[index_1], cardNumberFormat[index_1]);
-			onChange(newCardNumberUnits_0);
-			if (validationStatus === "NOT_NUMBER") {
-				updateInputStatus(index_1, "NOT_NUMBER");
-				return;
-			}
-			updateInputStatus(index_1, "DEFAULT");
-			const newCardNumberFormat = getCardNumberFormat(detectCardBrand(newCardNumberUnits_0));
-			if (isFormatChanged(cardNumberFormat, newCardNumberFormat)) {
-				const reformattedUnits = updateCardNumberUnitsFormat(newCardNumberUnits_0, newCardNumberFormat);
-				onChange(reformattedUnits);
-				setStatus(reformattedUnits.map(_temp$1));
-			}
-			if (validationStatus === "DEFAULT") focusNextInput(index_1);
-			if (validateCardNumberInput(newCardNumberUnits_0) === "DEFAULT") onNextStep("CARD_NUMBER");
-		};
-		const handleCardNumberBlur = (index_2, input_1) => {
-			updateInputStatus(index_2, validateCardNumberUnitInput(input_1.slice(0, cardNumberFormat[index_2]), cardNumberFormat[index_2]));
-		};
-		T0 = FormField;
-		t1 = "결제할 카드 번호를 입력해 주세요";
-		t2 = "본인 명의의 카드만 결제 가능합니다.";
-		t3 = "카드 번호";
-		t4 = HELPER_MESSAGE$2[status.find(_temp2$1) ?? "DEFAULT"];
-		t5 = cardNumberFormat.map((maxLength, index_3) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-			autoFocus: index_3 === 0,
-			ref: registerInput(index_3),
-			placeholder: getCardNumberPlaceholder(maxLength),
-			inputMode: "numeric",
-			maxLength,
-			fullWidth: true,
-			value: cardNumberUnits[index_3],
-			onChange: (e) => {
-				const input_2 = e.target.value;
-				handleCardNumberChange(index_3, input_2);
-			},
-			onBlur: (e_0) => {
-				const input_3 = e_0.target.value;
-				handleCardNumberBlur(index_3, input_3);
-			},
-			state: status[index_3] === "DEFAULT" ? "default" : "error"
-		}, index_3));
-		$[0] = cardNumberUnits;
-		$[1] = focusNextInput;
-		$[2] = onChange;
-		$[3] = onNextStep;
-		$[4] = registerInput;
-		$[5] = status;
-		$[6] = T0;
-		$[7] = t1;
-		$[8] = t2;
-		$[9] = t3;
-		$[10] = t4;
-		$[11] = t5;
+		t3 = [focusInput, shouldFocus];
+		$[1] = focusInput;
+		$[2] = shouldFocus;
+		$[3] = t2;
+		$[4] = t3;
 	} else {
-		T0 = $[6];
-		t1 = $[7];
-		t2 = $[8];
-		t3 = $[9];
-		t4 = $[10];
-		t5 = $[11];
+		t2 = $[3];
+		t3 = $[4];
 	}
-	let t6;
-	if ($[13] !== T0 || $[14] !== t1 || $[15] !== t2 || $[16] !== t3 || $[17] !== t4 || $[18] !== t5) {
-		t6 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(T0, {
-			title: t1,
-			caption: t2,
-			label: t3,
-			helperMessage: t4,
-			children: t5
+	(0, import_react.useEffect)(t2, t3);
+	const T0 = FormField;
+	const t4 = "결제할 카드 번호를 입력해 주세요";
+	const t5 = "본인 명의의 카드만 결제 가능합니다.";
+	const t6 = "카드 번호";
+	const t7 = serverErrorMessage ?? HELPER_MESSAGE$2[status.find(_temp2$1) ?? "DEFAULT"];
+	const t8 = cardNumberFormat.map((maxLength, index_3) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
+		autoFocus: index_3 === 0,
+		ref: registerInput(index_3),
+		placeholder: getCardNumberPlaceholder(maxLength),
+		inputMode: "numeric",
+		maxLength,
+		fullWidth: true,
+		value: cardNumberUnits[index_3],
+		onChange: (e) => {
+			const input_2 = e.target.value;
+			handleCardNumberChange(index_3, input_2);
+		},
+		onBlur: (e_0) => {
+			const input_3 = e_0.target.value;
+			handleCardNumberBlur(index_3, input_3);
+		},
+		state: serverErrorMessage || status[index_3] !== "DEFAULT" ? "error" : "default"
+	}, index_3));
+	let t9;
+	if ($[5] !== T0 || $[6] !== t7 || $[7] !== t8) {
+		t9 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(T0, {
+			title: t4,
+			caption: t5,
+			label: t6,
+			helperMessage: t7,
+			children: t8
 		});
-		$[13] = T0;
-		$[14] = t1;
-		$[15] = t2;
-		$[16] = t3;
-		$[17] = t4;
-		$[18] = t5;
-		$[19] = t6;
-	} else t6 = $[19];
-	return t6;
+		$[5] = T0;
+		$[6] = t7;
+		$[7] = t8;
+		$[8] = t9;
+	} else t9 = $[8];
+	return t9;
 };
-function _temp$1() {
+function _temp$2() {
 	return "DEFAULT";
 }
 function _temp2$1(inputStatus_0) {
 	return inputStatus_0 !== "DEFAULT";
 }
 //#endregion
-//#region src/components/CardPasswordInputField/constants.ts
+//#region src/components/CardRegister/CardPasswordInputField/constants.ts
 var PASSWORD_MAX_LENGTH = CARD_FIELD_LENGTH.PASSWORD;
 var HELPER_MESSAGE$1 = {
 	DEFAULT: "",
@@ -17277,7 +17323,7 @@ var HELPER_MESSAGE$1 = {
 	INVALID_LENGTH: `숫자 ${PASSWORD_MAX_LENGTH}자리를 모두 입력해 주세요.`
 };
 //#endregion
-//#region src/components/CardPasswordInputField/CardPasswordInputField.tsx
+//#region src/components/CardRegister/CardPasswordInputField/CardPasswordInputField.tsx
 var CardPasswordInputField = (t0) => {
 	const $ = (0, import_compiler_runtime.c)(13);
 	const { password, onChange } = t0;
@@ -17360,7 +17406,7 @@ var CardPasswordInputField = (t0) => {
 	return t8;
 };
 //#endregion
-//#region src/components/CardValidityPeriodInputField/constants.ts
+//#region src/components/CardRegister/CardValidityPeriodInputField/constants.ts
 var MONTH_MAX_LENGTH = CARD_FIELD_LENGTH.VALIDITY_MONTH;
 var YEAR_MAX_LENGTH = CARD_FIELD_LENGTH.VALIDITY_YEAR;
 var HELPER_MESSAGE = {
@@ -17374,16 +17420,16 @@ var HELPER_MESSAGE = {
 	EXPIRED_VALIDITY_PERIOD: "만료된 유효기간입니다."
 };
 //#endregion
-//#region src/components/CardValidityPeriodInputField/CardValidityPeriodInputField.tsx
+//#region src/components/CardRegister/CardValidityPeriodInputField/CardValidityPeriodInputField.tsx
 var INPUTS_STATUSES = {
 	month: "DEFAULT",
 	year: "DEFAULT"
 };
 var CardValidityPeriodInputField = (t0) => {
-	const $ = (0, import_compiler_runtime.c)(39);
-	const { validityPeriod, onChange, onNextStep } = t0;
+	const $ = (0, import_compiler_runtime.c)(43);
+	const { validityPeriod, onChange, onNextStep, serverErrorMessage, shouldFocus } = t0;
 	const [status, setStatus] = (0, import_react.useState)(INPUTS_STATUSES);
-	const { registerInput, focusNextInput } = useInputFocus();
+	const { registerInput, focusNextInput, focusInput } = useInputFocus();
 	let t1;
 	if ($[0] !== focusNextInput || $[1] !== onChange || $[2] !== validityPeriod) {
 		t1 = (input) => {
@@ -17400,7 +17446,7 @@ var CardValidityPeriodInputField = (t0) => {
 				}));
 				return;
 			}
-			setStatus(_temp);
+			setStatus(_temp$1);
 			if (validationStatus === "DEFAULT") focusNextInput(0);
 		};
 		$[0] = focusNextInput;
@@ -17456,103 +17502,119 @@ var CardValidityPeriodInputField = (t0) => {
 		$[10] = t3;
 	} else t3 = $[10];
 	const handleValidityPeriodBlur = t3;
-	const t4 = status.month !== "DEFAULT" ? HELPER_MESSAGE[status.month] : HELPER_MESSAGE[status.year];
+	let t4;
 	let t5;
-	if ($[11] !== registerInput) {
-		t5 = registerInput(0);
-		$[11] = registerInput;
-		$[12] = t5;
-	} else t5 = $[12];
-	let t6;
-	if ($[13] !== handleMonthChange) {
-		t6 = (e) => handleMonthChange(e.target.value);
-		$[13] = handleMonthChange;
-		$[14] = t6;
-	} else t6 = $[14];
+	if ($[11] !== focusInput || $[12] !== shouldFocus) {
+		t4 = () => {
+			if (shouldFocus) focusInput(0);
+		};
+		t5 = [focusInput, shouldFocus];
+		$[11] = focusInput;
+		$[12] = shouldFocus;
+		$[13] = t4;
+		$[14] = t5;
+	} else {
+		t4 = $[13];
+		t5 = $[14];
+	}
+	(0, import_react.useEffect)(t4, t5);
+	const t6 = serverErrorMessage ?? (status.month !== "DEFAULT" ? HELPER_MESSAGE[status.month] : HELPER_MESSAGE[status.year]);
 	let t7;
-	if ($[15] !== handleValidityPeriodBlur) {
-		t7 = (e_0) => handleValidityPeriodBlur("month", e_0.target.value);
-		$[15] = handleValidityPeriodBlur;
+	if ($[15] !== registerInput) {
+		t7 = registerInput(0);
+		$[15] = registerInput;
 		$[16] = t7;
 	} else t7 = $[16];
-	const t8 = status.month === "DEFAULT" ? "default" : "error";
+	let t8;
+	if ($[17] !== handleMonthChange) {
+		t8 = (e) => handleMonthChange(e.target.value);
+		$[17] = handleMonthChange;
+		$[18] = t8;
+	} else t8 = $[18];
 	let t9;
-	if ($[17] !== t5 || $[18] !== t6 || $[19] !== t7 || $[20] !== t8 || $[21] !== validityPeriod.month) {
-		t9 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
+	if ($[19] !== handleValidityPeriodBlur) {
+		t9 = (e_0) => handleValidityPeriodBlur("month", e_0.target.value);
+		$[19] = handleValidityPeriodBlur;
+		$[20] = t9;
+	} else t9 = $[20];
+	const t10 = serverErrorMessage || status.month !== "DEFAULT" ? "error" : "default";
+	let t11;
+	if ($[21] !== t10 || $[22] !== t7 || $[23] !== t8 || $[24] !== t9 || $[25] !== validityPeriod.month) {
+		t11 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
 			autoFocus: true,
-			ref: t5,
+			ref: t7,
 			placeholder: "MM",
 			inputMode: "numeric",
 			maxLength: MONTH_MAX_LENGTH,
 			fullWidth: true,
 			value: validityPeriod.month,
-			onChange: t6,
-			onBlur: t7,
-			state: t8
+			onChange: t8,
+			onBlur: t9,
+			state: t10
 		});
-		$[17] = t5;
-		$[18] = t6;
-		$[19] = t7;
-		$[20] = t8;
-		$[21] = validityPeriod.month;
-		$[22] = t9;
-	} else t9 = $[22];
-	let t10;
-	if ($[23] !== registerInput) {
-		t10 = registerInput(1);
-		$[23] = registerInput;
-		$[24] = t10;
-	} else t10 = $[24];
-	let t11;
-	if ($[25] !== handleYearChange) {
-		t11 = (e_1) => handleYearChange(e_1.target.value);
-		$[25] = handleYearChange;
+		$[21] = t10;
+		$[22] = t7;
+		$[23] = t8;
+		$[24] = t9;
+		$[25] = validityPeriod.month;
 		$[26] = t11;
 	} else t11 = $[26];
 	let t12;
-	if ($[27] !== handleValidityPeriodBlur) {
-		t12 = (e_2) => handleValidityPeriodBlur("year", e_2.target.value);
-		$[27] = handleValidityPeriodBlur;
+	if ($[27] !== registerInput) {
+		t12 = registerInput(1);
+		$[27] = registerInput;
 		$[28] = t12;
 	} else t12 = $[28];
-	const t13 = status.year === "DEFAULT" ? "default" : "error";
+	let t13;
+	if ($[29] !== handleYearChange) {
+		t13 = (e_1) => handleYearChange(e_1.target.value);
+		$[29] = handleYearChange;
+		$[30] = t13;
+	} else t13 = $[30];
 	let t14;
-	if ($[29] !== t10 || $[30] !== t11 || $[31] !== t12 || $[32] !== t13 || $[33] !== validityPeriod.year) {
-		t14 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
-			ref: t10,
+	if ($[31] !== handleValidityPeriodBlur) {
+		t14 = (e_2) => handleValidityPeriodBlur("year", e_2.target.value);
+		$[31] = handleValidityPeriodBlur;
+		$[32] = t14;
+	} else t14 = $[32];
+	const t15 = serverErrorMessage || status.year !== "DEFAULT" ? "error" : "default";
+	let t16;
+	if ($[33] !== t12 || $[34] !== t13 || $[35] !== t14 || $[36] !== t15 || $[37] !== validityPeriod.year) {
+		t16 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Input, {
+			ref: t12,
 			placeholder: "YY",
 			inputMode: "numeric",
 			maxLength: YEAR_MAX_LENGTH,
 			fullWidth: true,
 			value: validityPeriod.year,
-			onChange: t11,
-			onBlur: t12,
-			state: t13
+			onChange: t13,
+			onBlur: t14,
+			state: t15
 		});
-		$[29] = t10;
-		$[30] = t11;
-		$[31] = t12;
-		$[32] = t13;
-		$[33] = validityPeriod.year;
-		$[34] = t14;
-	} else t14 = $[34];
-	let t15;
-	if ($[35] !== t14 || $[36] !== t4 || $[37] !== t9) {
-		t15 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormField, {
+		$[33] = t12;
+		$[34] = t13;
+		$[35] = t14;
+		$[36] = t15;
+		$[37] = validityPeriod.year;
+		$[38] = t16;
+	} else t16 = $[38];
+	let t17;
+	if ($[39] !== t11 || $[40] !== t16 || $[41] !== t6) {
+		t17 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(FormField, {
 			title: "카드 유효기간을 입력해 주세요",
 			caption: "월/년도(MMYY)를 순서대로 입력해 주세요.",
 			label: "유효기간",
-			helperMessage: t4,
-			children: [t9, t14]
+			helperMessage: t6,
+			children: [t11, t16]
 		});
-		$[35] = t14;
-		$[36] = t4;
-		$[37] = t9;
-		$[38] = t15;
-	} else t15 = $[38];
-	return t15;
+		$[39] = t11;
+		$[40] = t16;
+		$[41] = t6;
+		$[42] = t17;
+	} else t17 = $[42];
+	return t17;
 };
-function _temp(prev_0) {
+function _temp$1(prev_0) {
 	return {
 		...prev_0,
 		month: "DEFAULT"
@@ -17567,16 +17629,16 @@ function _temp2(prev_2) {
 //#endregion
 //#region src/components/common/Button.tsx
 var Button = styled.button`
-  width: ${({ fixedBottom }) => fixedBottom ? "100%" : "20rem"};
+  width: ${({ fullWidth }) => fullWidth ? "100%" : "auto"};
   height: ${({ fixedBottom }) => fixedBottom ? "auto" : "2.8rem"};
   padding: ${({ fixedBottom }) => fixedBottom ? "1.25rem" : "0.5rem"};
   border-radius: ${({ fixedBottom }) => fixedBottom ? "0" : "0.3rem"};
-  background-color: ${COLOR_PALETTE["BLACK-800"]};
-  color: ${COLOR_PALETTE.WHITE};
+  background-color: ${({ dashed }) => dashed ? COLOR_PALETTE.WHITE : COLOR_PALETTE["BLACK-800"]};
+  color: ${({ dashed }) => dashed ? COLOR_PALETTE["GREY-500"] : COLOR_PALETTE.WHITE};
   font-size: 1rem;
   font-weight: ${({ fixedBottom }) => fixedBottom ? 700 : 400};
   cursor: pointer;
-  border: none;
+  border: ${({ dashed }) => dashed ? `1px dashed ${COLOR_PALETTE["GREY-200"]}` : "none"};
 
   ${({ fixedBottom }) => fixedBottom && `
       position: fixed;
@@ -17627,11 +17689,45 @@ var useFormStep = (formStep, firstStepKey) => {
 //#endregion
 //#region src/constants/routes.ts
 var ROUTE_PATH = {
-	ADD_CARD: "/",
-	ADD_CARD_COMPLETE: "/complete"
+	CARD_LIST: "/cards",
+	CARD_REGISTER: "/register",
+	CARD_REGISTER_COMPLETE: "/complete"
 };
 //#endregion
-//#region src/pages/AddNewCardPage.tsx
+//#region src/components/common/PageLayout.tsx
+var PageLayout = styled.div`
+  max-width: 23rem;
+  margin-inline: auto;
+`;
+//#endregion
+//#region src/api/error.ts
+var ApiError = class extends Error {
+	code;
+	constructor({ code, message }) {
+		super(message);
+		this.code = code;
+	}
+};
+//#endregion
+//#region src/api/cards.ts
+var registerCard = async (card) => {
+	const response = await fetch("/cards", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(card)
+	});
+	if (!response.ok) throw new ApiError(await response.json());
+};
+var getCards = async () => {
+	const response = await fetch("/cards");
+	if (!response.ok) throw new Error("카드 목록 조회에 실패했습니다.");
+	return response.json();
+};
+var deleteCard = async (cardId) => {
+	if (!(await fetch(`/cards/${cardId}`, { method: "DELETE" })).ok) throw new Error("카드 삭제에 실패했습니다.");
+};
+//#endregion
+//#region src/pages/CardRegisterPage.tsx
 var DEFAULT_CARD_NUMBER_UNITS = [
 	"",
 	"",
@@ -17642,155 +17738,106 @@ var DEFAULT_VALIDITY_PERIOD = {
 	month: "",
 	year: ""
 };
-var AddNewCardPage = () => {
-	const $ = (0, import_compiler_runtime.c)(46);
+var SERVER_ERROR_FIELD_BY_CODE = {
+	INVALID_CARD_NUMBER: "cardNumber",
+	INVALID_CVC: "cvc",
+	INVALID_EXPIRATION_DATE: "validityPeriod"
+};
+var CardRegisterPage = () => {
 	const [cardNumber, setCardNumber] = (0, import_react.useState)(DEFAULT_CARD_NUMBER_UNITS);
 	const [cardCompany, setCardCompany] = (0, import_react.useState)(null);
 	const [validityPeriod, setValidityPeriod] = (0, import_react.useState)(DEFAULT_VALIDITY_PERIOD);
 	const [CVC, setCVC] = (0, import_react.useState)("");
 	const [password, setPassword] = (0, import_react.useState)("");
-	const { goToNextStep, isStepVisible } = useFormStep(ADD_CARD_FORM_STEP, "CARD_NUMBER");
+	const [serverErrors, setServerErrors] = (0, import_react.useState)({});
+	const { goToNextStep, isStepVisible } = useFormStep(CARD_REGISTER_FORM_STEP, "CARD_NUMBER");
 	const navigate = useNavigate();
-	let t0;
-	if ($[0] !== CVC || $[1] !== cardCompany || $[2] !== cardNumber || $[3] !== password || $[4] !== validityPeriod) {
-		t0 = validateCardForm(cardNumber, cardCompany, validityPeriod, CVC, password);
-		$[0] = CVC;
-		$[1] = cardCompany;
-		$[2] = cardNumber;
-		$[3] = password;
-		$[4] = validityPeriod;
-		$[5] = t0;
-	} else t0 = $[5];
-	const isFormValid = t0;
-	let t1;
-	if ($[6] !== cardCompany?.name || $[7] !== cardNumber[0] || $[8] !== navigate) {
-		t1 = (event) => {
-			event.preventDefault();
-			navigate(ROUTE_PATH.ADD_CARD_COMPLETE, { state: {
+	const isFormValid = validateCardForm(cardNumber, cardCompany, validityPeriod, CVC, password);
+	const handleCardFormSubmit = async (event) => {
+		event.preventDefault();
+		try {
+			await registerCard({
+				number: cardNumber.join(""),
+				expirationDate: `${getFormattedValidityPeriodUnit(validityPeriod)}`,
+				cvc: CVC,
+				issuerCode: cardCompany?.issuerCode ?? ""
+			});
+			navigate(ROUTE_PATH.CARD_REGISTER_COMPLETE, { state: {
 				cardNumberPrefix: cardNumber[0],
 				cardCompanyName: cardCompany?.name ?? ""
 			} });
-		};
-		$[6] = cardCompany?.name;
-		$[7] = cardNumber[0];
-		$[8] = navigate;
-		$[9] = t1;
-	} else t1 = $[9];
-	const handleCardFormSubmit = t1;
-	let t2;
-	if ($[10] !== cardCompany || $[11] !== cardNumber || $[12] !== validityPeriod) {
-		t2 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardWrapper, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Card, {
-			cardNumberUnits: cardNumber,
-			cardCompany,
-			validityPeriod
-		}) });
-		$[10] = cardCompany;
-		$[11] = cardNumber;
-		$[12] = validityPeriod;
-		$[13] = t2;
-	} else t2 = $[13];
-	let t3;
-	if ($[14] !== isStepVisible || $[15] !== password) {
-		t3 = isStepVisible("PASSWORD") && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardPasswordInputField, {
-			password,
-			onChange: setPassword
-		});
-		$[14] = isStepVisible;
-		$[15] = password;
-		$[16] = t3;
-	} else t3 = $[16];
-	let t4;
-	if ($[17] !== CVC || $[18] !== goToNextStep || $[19] !== isStepVisible) {
-		t4 = isStepVisible("CVC") && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardCVCInputField, {
-			CVC,
-			onChange: setCVC,
-			onNextStep: goToNextStep
-		});
-		$[17] = CVC;
-		$[18] = goToNextStep;
-		$[19] = isStepVisible;
-		$[20] = t4;
-	} else t4 = $[20];
-	let t5;
-	if ($[21] !== goToNextStep || $[22] !== isStepVisible || $[23] !== validityPeriod) {
-		t5 = isStepVisible("VALIDITY_PERIOD") && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardValidityPeriodInputField, {
-			validityPeriod,
-			onChange: setValidityPeriod,
-			onNextStep: goToNextStep
-		});
-		$[21] = goToNextStep;
-		$[22] = isStepVisible;
-		$[23] = validityPeriod;
-		$[24] = t5;
-	} else t5 = $[24];
-	let t6;
-	if ($[25] !== cardCompany || $[26] !== goToNextStep || $[27] !== isStepVisible) {
-		t6 = isStepVisible("COMPANY") && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardCompanySelector, {
-			cardCompany,
-			onSelect: setCardCompany,
-			onNextStep: goToNextStep
-		});
-		$[25] = cardCompany;
-		$[26] = goToNextStep;
-		$[27] = isStepVisible;
-		$[28] = t6;
-	} else t6 = $[28];
-	let t7;
-	if ($[29] !== cardNumber || $[30] !== goToNextStep || $[31] !== isStepVisible) {
-		t7 = isStepVisible("CARD_NUMBER") && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardNumberInputField, {
-			cardNumberUnits: cardNumber,
-			onChange: setCardNumber,
-			onNextStep: goToNextStep
-		});
-		$[29] = cardNumber;
-		$[30] = goToNextStep;
-		$[31] = isStepVisible;
-		$[32] = t7;
-	} else t7 = $[32];
-	let t8;
-	if ($[33] !== isFormValid) {
-		t8 = isFormValid && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-			type: "submit",
-			fixedBottom: true,
-			children: "확인"
-		});
-		$[33] = isFormValid;
-		$[34] = t8;
-	} else t8 = $[34];
-	let t9;
-	if ($[35] !== handleCardFormSubmit || $[36] !== t3 || $[37] !== t4 || $[38] !== t5 || $[39] !== t6 || $[40] !== t7 || $[41] !== t8) {
-		t9 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardInfoForm, {
-			onSubmit: handleCardFormSubmit,
-			children: [
-				t3,
-				t4,
-				t5,
-				t6,
-				t7,
-				t8
-			]
-		});
-		$[35] = handleCardFormSubmit;
-		$[36] = t3;
-		$[37] = t4;
-		$[38] = t5;
-		$[39] = t6;
-		$[40] = t7;
-		$[41] = t8;
-		$[42] = t9;
-	} else t9 = $[42];
-	let t10;
-	if ($[43] !== t2 || $[44] !== t9) {
-		t10 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(PageWrapper$1, { children: [t2, t9] });
-		$[43] = t2;
-		$[44] = t9;
-		$[45] = t10;
-	} else t10 = $[45];
-	return t10;
+		} catch (error) {
+			if (error instanceof ApiError) {
+				const field = SERVER_ERROR_FIELD_BY_CODE[error.code];
+				if (field) setServerErrors({ [field]: error.message });
+			}
+		}
+	};
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PageLayout, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(PageWrapper$2, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardWrapper, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Card, {
+		cardNumberUnits: cardNumber,
+		cardCompany,
+		validityPeriod
+	}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardInfoForm, {
+		onSubmit: handleCardFormSubmit,
+		children: [
+			isStepVisible("PASSWORD") && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardPasswordInputField, {
+				password,
+				onChange: setPassword
+			}),
+			isStepVisible("CVC") && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardCVCInputField, {
+				CVC,
+				onChange: (nextCVC) => {
+					setCVC(nextCVC);
+					setServerErrors((prev) => ({
+						...prev,
+						cvc: void 0
+					}));
+				},
+				onNextStep: goToNextStep,
+				serverErrorMessage: serverErrors.cvc,
+				shouldFocus: Boolean(serverErrors.cvc)
+			}),
+			isStepVisible("VALIDITY_PERIOD") && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardValidityPeriodInputField, {
+				validityPeriod,
+				onChange: (nextValidityPeriod) => {
+					setValidityPeriod(nextValidityPeriod);
+					setServerErrors((prev_0) => ({
+						...prev_0,
+						validityPeriod: void 0
+					}));
+				},
+				onNextStep: goToNextStep,
+				serverErrorMessage: serverErrors.validityPeriod,
+				shouldFocus: Boolean(serverErrors.validityPeriod)
+			}),
+			isStepVisible("COMPANY") && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardCompanySelector, {
+				cardCompany,
+				onSelect: setCardCompany,
+				onNextStep: goToNextStep
+			}),
+			isStepVisible("CARD_NUMBER") && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardNumberInputField, {
+				cardNumberUnits: cardNumber,
+				onChange: (nextCardNumber) => {
+					setCardNumber(nextCardNumber);
+					setServerErrors((prev_1) => ({
+						...prev_1,
+						cardNumber: void 0
+					}));
+				},
+				onNextStep: goToNextStep,
+				serverErrorMessage: serverErrors.cardNumber,
+				shouldFocus: Boolean(serverErrors.cardNumber)
+			}),
+			isFormValid && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+				type: "submit",
+				fullWidth: true,
+				fixedBottom: true,
+				children: "확인"
+			})
+		]
+	})] }) });
 };
-var PageWrapper$1 = styled.div`
-  max-width: 23rem;
-  margin-inline: auto;
+var PageWrapper$2 = styled.div`
   padding-bottom: 4rem;
 `;
 var CardWrapper = styled.div`
@@ -17809,8 +17856,8 @@ var CardInfoForm = styled.form`
 //#region src/assets/completeCheckImage.png
 var completeCheckImage_default = "data:image/png;base64,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";
 //#endregion
-//#region src/pages/AddCardCompletePage.tsx
-var AddCardCompletePage = () => {
+//#region src/pages/CardRegisterCompletePage.tsx
+var CardRegisterCompletePage = () => {
 	const $ = (0, import_compiler_runtime.c)(10);
 	const navigate = useNavigate();
 	const { state } = useLocation();
@@ -17844,7 +17891,8 @@ var AddCardCompletePage = () => {
 	let t3;
 	if ($[5] !== navigate) {
 		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-			onClick: () => navigate(ROUTE_PATH.ADD_CARD),
+			fullWidth: true,
+			onClick: () => navigate(ROUTE_PATH.CARD_LIST),
 			children: "확인"
 		});
 		$[5] = navigate;
@@ -17852,27 +17900,24 @@ var AddCardCompletePage = () => {
 	} else t3 = $[6];
 	let t4;
 	if ($[7] !== t2 || $[8] !== t3) {
-		t4 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(PageWrapper, { children: [
+		t4 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PageLayout, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(PageWrapper$1, { children: [
 			t0,
 			t2,
 			t3
-		] });
+		] }) });
 		$[7] = t2;
 		$[8] = t3;
 		$[9] = t4;
 	} else t4 = $[9];
 	return t4;
 };
-var PageWrapper = styled.div`
-  max-width: 23rem;
+var PageWrapper$1 = styled.div`
   min-height: 100vh;
-  margin-inline: auto;
-  padding-bottom: 4rem;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 0 1.75rem;
 `;
 var CompleteCheckImage = styled.img`
   width: 4.75rem;
@@ -17887,14 +17932,619 @@ var CompleteTitle = styled.h1`
   color: ${COLOR_PALETTE["BLACK-700"]};
 `;
 //#endregion
+//#region src/components/CardList/CardListEmpty.tsx
+var CardListEmpty = (t0) => {
+	const $ = (0, import_compiler_runtime.c)(5);
+	const { onAddCard } = t0;
+	let t1;
+	let t2;
+	let t3;
+	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
+		t1 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardPlaceholder, {});
+		t2 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(EmptyTitle, { children: "등록된 카드가 없습니다" });
+		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Description$1, { children: "아래 버튼을 눌러 첫 카드를 등록해보세요" });
+		$[0] = t1;
+		$[1] = t2;
+		$[2] = t3;
+	} else {
+		t1 = $[0];
+		t2 = $[1];
+		t3 = $[2];
+	}
+	let t4;
+	if ($[3] !== onAddCard) {
+		t4 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Container$3, { children: [
+			t1,
+			t2,
+			t3,
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+				fullWidth: true,
+				onClick: onAddCard,
+				children: "카드 추가하기"
+			})
+		] });
+		$[3] = onAddCard;
+		$[4] = t4;
+	} else t4 = $[4];
+	return t4;
+};
+var Container$3 = styled.div`
+  padding-top: 7.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+`;
+var CardPlaceholder = styled.div`
+  width: 10rem;
+  height: 6.25rem;
+  border-radius: 0.35rem;
+  border: 1px dashed ${COLOR_PALETTE["GREY-200"]};
+  background-color: ${COLOR_PALETTE["GREY-100"]};
+`;
+var EmptyTitle = styled.h2`
+  margin: 1rem 0 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: ${COLOR_PALETTE["BLACK-700"]};
+`;
+var Description$1 = styled.p`
+  margin: 1rem;
+  font-size: 0.8rem;
+  font-weight: 400;
+
+  color: ${COLOR_PALETTE["GREY-600"]};
+`;
+//#endregion
+//#region src/assets/ErrorImage.png
+var ErrorImage_default = "/react-payments/assets/ErrorImage-D729SCkj.png";
+//#endregion
+//#region src/components/CardList/CardListError.tsx
+var CardListError = (t0) => {
+	const $ = (0, import_compiler_runtime.c)(5);
+	const { onRetry } = t0;
+	let t1;
+	let t2;
+	let t3;
+	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
+		t1 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ErrorImage, {
+			src: ErrorImage_default,
+			alt: "errorImage"
+		});
+		t2 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ErrorTitle, { children: "카드 목록을 불러올 수 없어요" });
+		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Description, { children: "잠시 후 다시 시도해 주세요." });
+		$[0] = t1;
+		$[1] = t2;
+		$[2] = t3;
+	} else {
+		t1 = $[0];
+		t2 = $[1];
+		t3 = $[2];
+	}
+	let t4;
+	if ($[3] !== onRetry) {
+		t4 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Container$2, { children: [
+			t1,
+			t2,
+			t3,
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+				fullWidth: true,
+				onClick: onRetry,
+				children: "다시 시도"
+			})
+		] });
+		$[3] = onRetry;
+		$[4] = t4;
+	} else t4 = $[4];
+	return t4;
+};
+var Container$2 = styled.div`
+  padding-top: 7.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+`;
+var ErrorImage = styled.img`
+  width: 4rem;
+  height: 4rem;
+`;
+var ErrorTitle = styled.h2`
+  margin: 1rem 0 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: ${COLOR_PALETTE["BLACK-700"]};
+`;
+var Description = styled.p`
+  margin: 1rem;
+  font-size: 0.8rem;
+  font-weight: 400;
+
+  color: ${COLOR_PALETTE["GREY-600"]};
+`;
+//#endregion
+//#region src/components/CardList/CardListItemSkeleton.tsx
+var CardListItemSkeleton = () => {
+	const $ = (0, import_compiler_runtime.c)(2);
+	let t0;
+	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
+		t0 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardImage$1, {});
+		$[0] = t0;
+	} else t0 = $[0];
+	let t1;
+	if ($[1] === Symbol.for("react.memo_cache_sentinel")) {
+		t1 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Item$1, { children: [t0, /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardInfo$1, { children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardCompanySkeleton, {}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardNumberSkeleton, {}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardExpirationDateSkeleton, {})
+		] })] });
+		$[1] = t1;
+	} else t1 = $[1];
+	return t1;
+};
+var Item$1 = styled.li`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 4.25rem;
+  padding: 0.75rem;
+  border: 1px solid ${COLOR_PALETTE["GREY-200"]};
+  border-radius: 0.35rem;
+`;
+var Skeleton = styled.div`
+  border-radius: 0.25rem;
+  background-color: ${COLOR_PALETTE["GREY-200"]};
+`;
+var CardImage$1 = styled(Skeleton)`
+  width: 4rem;
+  height: 2.5rem;
+`;
+var CardInfo$1 = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+`;
+var CardCompanySkeleton = styled(Skeleton)`
+  width: 5rem;
+  height: 0.85rem;
+`;
+var CardNumberSkeleton = styled(Skeleton)`
+  width: 8.75rem;
+  height: 0.65rem;
+`;
+var CardExpirationDateSkeleton = styled(Skeleton)`
+  width: 4rem;
+  height: 0.55rem;
+`;
+//#endregion
+//#region src/components/CardList/CardListLoading.tsx
+var SKELETON_ITEM_COUNT = 3;
+var CardListLoading = () => {
+	const $ = (0, import_compiler_runtime.c)(1);
+	let t0;
+	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
+		t0 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Container$1, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(List$1, { children: Array.from({ length: SKELETON_ITEM_COUNT }).map(_temp) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AddButtonSkeleton, {})] });
+		$[0] = t0;
+	} else t0 = $[0];
+	return t0;
+};
+var Container$1 = styled.div`
+  margin-top: 1rem;
+`;
+var List$1 = styled.ul`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+`;
+var AddButtonSkeleton = styled.div`
+  height: 2.75rem;
+  margin-top: 1rem;
+  border-radius: 0.3rem;
+  background-color: ${COLOR_PALETTE["GREY-100"]};
+`;
+function _temp(_, index) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardListItemSkeleton, {}, index);
+}
+//#endregion
+//#region src/assets/deleteIcon.svg
+var deleteIcon_default = "data:image/svg+xml,%3csvg%20width='13'%20height='13'%20viewBox='0%200%2013%2013'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20d='M0.86396%2012.288L-3.99947e-05%2011.424L5.24796%206.14402L-3.99947e-05%200.864021L0.86396%202.09808e-05L6.11196%205.28002L11.328%202.09808e-05L12.192%200.864021L6.94396%206.14402L12.192%2011.424L11.328%2012.288L6.11196%207.04002L0.86396%2012.288Z'%20fill='%238C8C8C'/%3e%3c/svg%3e";
+//#endregion
+//#region src/components/CardList/CardListItem.tsx
+var CardListItem = (t0) => {
+	const $ = (0, import_compiler_runtime.c)(26);
+	const { card, onDelete } = t0;
+	let t1;
+	if ($[0] !== card.issuerCode) {
+		t1 = CARD_COMPANIES.find((company) => company.issuerCode === card.issuerCode);
+		$[0] = card.issuerCode;
+		$[1] = t1;
+	} else t1 = $[1];
+	const cardCompany = t1;
+	const t2 = cardCompany?.color;
+	let t3;
+	if ($[2] !== t2) {
+		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardImage, { $backgroundColor: t2 });
+		$[2] = t2;
+		$[3] = t3;
+	} else t3 = $[3];
+	const t4 = cardCompany?.name;
+	let t5;
+	if ($[4] !== t4) {
+		t5 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardCompany, { children: t4 });
+		$[4] = t4;
+		$[5] = t5;
+	} else t5 = $[5];
+	let t6;
+	if ($[6] !== card.number) {
+		t6 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardNumber, { children: card.number });
+		$[6] = card.number;
+		$[7] = t6;
+	} else t6 = $[7];
+	let t7;
+	if ($[8] !== card.expirationDate) {
+		t7 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardExpirationDate, { children: ["유효기간 ", card.expirationDate] });
+		$[8] = card.expirationDate;
+		$[9] = t7;
+	} else t7 = $[9];
+	let t8;
+	if ($[10] !== t5 || $[11] !== t6 || $[12] !== t7) {
+		t8 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardInfo, { children: [
+			t5,
+			t6,
+			t7
+		] });
+		$[10] = t5;
+		$[11] = t6;
+		$[12] = t7;
+		$[13] = t8;
+	} else t8 = $[13];
+	let t9;
+	if ($[14] !== t3 || $[15] !== t8) {
+		t9 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardContent, { children: [t3, t8] });
+		$[14] = t3;
+		$[15] = t8;
+		$[16] = t9;
+	} else t9 = $[16];
+	let t10;
+	if ($[17] !== card.id || $[18] !== onDelete) {
+		t10 = () => onDelete(card.id);
+		$[17] = card.id;
+		$[18] = onDelete;
+		$[19] = t10;
+	} else t10 = $[19];
+	let t11;
+	if ($[20] === Symbol.for("react.memo_cache_sentinel")) {
+		t11 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DeleteIcon, {
+			src: deleteIcon_default,
+			alt: ""
+		});
+		$[20] = t11;
+	} else t11 = $[20];
+	let t12;
+	if ($[21] !== t10) {
+		t12 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DeleteButton, {
+			onClick: t10,
+			children: t11
+		});
+		$[21] = t10;
+		$[22] = t12;
+	} else t12 = $[22];
+	let t13;
+	if ($[23] !== t12 || $[24] !== t9) {
+		t13 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Item, { children: [t9, t12] });
+		$[23] = t12;
+		$[24] = t9;
+		$[25] = t13;
+	} else t13 = $[25];
+	return t13;
+};
+var Item = styled.li`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 4.25rem;
+  padding: 0.75rem;
+  border: 1px solid ${COLOR_PALETTE["GREY-200"]};
+  border-radius: 0.35rem;
+`;
+var CardContent = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+`;
+var CardImage = styled.div`
+  width: 4rem;
+  height: 2.5rem;
+  border-radius: 0.25rem;
+  background-color: ${({ $backgroundColor }) => $backgroundColor ?? COLOR_PALETTE["BLACK-800"]};
+`;
+var CardInfo = styled.div`
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.25rem;
+`;
+var CardCompany = styled.strong`
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: ${COLOR_PALETTE["BLACK-700"]};
+`;
+var CardNumber = styled.span`
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: ${COLOR_PALETTE["GREY-500"]};
+`;
+var CardExpirationDate = styled.span`
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: ${COLOR_PALETTE["GREY-500"]};
+`;
+var DeleteButton = styled.button`
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+`;
+var DeleteIcon = styled.img`
+  width: 1rem;
+  height: 1rem;
+`;
+//#endregion
+//#region src/components/CardList/CardListSuccess.tsx
+var CardListSuccess = (t0) => {
+	const $ = (0, import_compiler_runtime.c)(12);
+	const { cards, onAddCard, onDeleteCard } = t0;
+	let t1;
+	if ($[0] !== cards || $[1] !== onDeleteCard) {
+		let t2;
+		if ($[3] !== onDeleteCard) {
+			t2 = (card) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardListItem, {
+				card,
+				onDelete: () => onDeleteCard(card.id)
+			}, card.id);
+			$[3] = onDeleteCard;
+			$[4] = t2;
+		} else t2 = $[4];
+		t1 = cards.map(t2);
+		$[0] = cards;
+		$[1] = onDeleteCard;
+		$[2] = t1;
+	} else t1 = $[2];
+	let t2;
+	if ($[5] !== t1) {
+		t2 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(List, { children: t1 });
+		$[5] = t1;
+		$[6] = t2;
+	} else t2 = $[6];
+	let t3;
+	if ($[7] !== onAddCard) {
+		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AddButtonWrapper, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+			fullWidth: true,
+			dashed: true,
+			onClick: onAddCard,
+			children: "+카드추가"
+		}) });
+		$[7] = onAddCard;
+		$[8] = t3;
+	} else t3 = $[8];
+	let t4;
+	if ($[9] !== t2 || $[10] !== t3) {
+		t4 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Container, { children: [t2, t3] });
+		$[9] = t2;
+		$[10] = t3;
+		$[11] = t4;
+	} else t4 = $[11];
+	return t4;
+};
+var Container = styled.div`
+  margin-top: 1rem;
+`;
+var List = styled.ul`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+`;
+var AddButtonWrapper = styled.div`
+  margin-top: 1rem;
+`;
+//#endregion
+//#region src/hooks/useCardList.ts
+var useCardList = () => {
+	const $ = (0, import_compiler_runtime.c)(6);
+	let t0;
+	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
+		t0 = [];
+		$[0] = t0;
+	} else t0 = $[0];
+	const [cards, setCards] = (0, import_react.useState)(t0);
+	const [status, setStatus] = (0, import_react.useState)("idle");
+	let t1;
+	if ($[1] === Symbol.for("react.memo_cache_sentinel")) {
+		t1 = async () => {
+			setStatus("loading");
+			try {
+				setCards(await getCards());
+				setStatus("success");
+			} catch {
+				setStatus("error");
+			}
+		};
+		$[1] = t1;
+	} else t1 = $[1];
+	const fetchCards = t1;
+	let t2;
+	if ($[2] === Symbol.for("react.memo_cache_sentinel")) {
+		t2 = async (cardId) => {
+			await deleteCard(cardId);
+			await fetchCards();
+		};
+		$[2] = t2;
+	} else t2 = $[2];
+	const removeCard = t2;
+	let t3;
+	if ($[3] !== cards || $[4] !== status) {
+		t3 = {
+			cards,
+			status,
+			fetchCards,
+			removeCard
+		};
+		$[3] = cards;
+		$[4] = status;
+		$[5] = t3;
+	} else t3 = $[5];
+	return t3;
+};
+//#endregion
+//#region src/pages/CardListPage.tsx
+var CardListPage = () => {
+	const $ = (0, import_compiler_runtime.c)(29);
+	const { cards, status, fetchCards, removeCard } = useCardList();
+	const navigate = useNavigate();
+	let t0;
+	let t1;
+	if ($[0] !== fetchCards) {
+		t0 = () => {
+			fetchCards();
+		};
+		t1 = [fetchCards];
+		$[0] = fetchCards;
+		$[1] = t0;
+		$[2] = t1;
+	} else {
+		t0 = $[1];
+		t1 = $[2];
+	}
+	(0, import_react.useEffect)(t0, t1);
+	let t2;
+	if ($[3] !== navigate) {
+		t2 = () => {
+			navigate(ROUTE_PATH.CARD_REGISTER);
+		};
+		$[3] = navigate;
+		$[4] = t2;
+	} else t2 = $[4];
+	const handleAddCard = t2;
+	let t3;
+	if ($[5] !== removeCard) {
+		t3 = async (cardId) => {
+			if (!window.confirm("카드를 삭제하시겠습니까?")) return;
+			try {
+				await removeCard(cardId);
+			} catch (t4) {
+				const error = t4;
+				window.alert(error instanceof Error ? error.message : "카드 삭제에 실패했습니다.");
+			}
+		};
+		$[5] = removeCard;
+		$[6] = t3;
+	} else t3 = $[6];
+	const handleDeleteCard = t3;
+	const hasCards = cards.length > 0;
+	const isSuccess = status === "success";
+	const isLoading = status === "loading";
+	const isError = status === "error";
+	const isEmpty = isSuccess && !hasCards;
+	const pageTitle = isSuccess && hasCards ? `보유 카드 (${cards.length})` : "보유 카드";
+	let t4;
+	if ($[7] !== pageTitle) {
+		t4 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PageTitle, { children: pageTitle });
+		$[7] = pageTitle;
+		$[8] = t4;
+	} else t4 = $[8];
+	let t5;
+	if ($[9] !== isLoading) {
+		t5 = isLoading && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardListLoading, {});
+		$[9] = isLoading;
+		$[10] = t5;
+	} else t5 = $[10];
+	let t6;
+	if ($[11] !== handleAddCard || $[12] !== isEmpty) {
+		t6 = isEmpty && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardListEmpty, { onAddCard: handleAddCard });
+		$[11] = handleAddCard;
+		$[12] = isEmpty;
+		$[13] = t6;
+	} else t6 = $[13];
+	let t7;
+	if ($[14] !== cards || $[15] !== handleAddCard || $[16] !== handleDeleteCard || $[17] !== hasCards || $[18] !== isSuccess) {
+		t7 = isSuccess && hasCards && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardListSuccess, {
+			cards,
+			onAddCard: handleAddCard,
+			onDeleteCard: handleDeleteCard
+		});
+		$[14] = cards;
+		$[15] = handleAddCard;
+		$[16] = handleDeleteCard;
+		$[17] = hasCards;
+		$[18] = isSuccess;
+		$[19] = t7;
+	} else t7 = $[19];
+	let t8;
+	if ($[20] !== fetchCards || $[21] !== isError) {
+		t8 = isError && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardListError, { onRetry: fetchCards });
+		$[20] = fetchCards;
+		$[21] = isError;
+		$[22] = t8;
+	} else t8 = $[22];
+	let t9;
+	if ($[23] !== t4 || $[24] !== t5 || $[25] !== t6 || $[26] !== t7 || $[27] !== t8) {
+		t9 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PageLayout, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(PageWrapper, { children: [
+			t4,
+			t5,
+			t6,
+			t7,
+			t8
+		] }) });
+		$[23] = t4;
+		$[24] = t5;
+		$[25] = t6;
+		$[26] = t7;
+		$[27] = t8;
+		$[28] = t9;
+	} else t9 = $[28];
+	return t9;
+};
+var PageWrapper = styled.div`
+  padding: 2.5rem 1.75rem;
+`;
+var PageTitle = styled.h1`
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: ${COLOR_PALETTE["BLACK-700"]};
+`;
+//#endregion
 //#region src/router.tsx
-var router = createBrowserRouter([{
-	path: ROUTE_PATH.ADD_CARD,
-	element: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AddNewCardPage, {})
-}, {
-	path: ROUTE_PATH.ADD_CARD_COMPLETE,
-	element: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AddCardCompletePage, {})
-}], { basename: "/react-payments/" });
+var router = createBrowserRouter([
+	{
+		path: "/",
+		element: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Navigate, {
+			to: ROUTE_PATH.CARD_LIST,
+			replace: true
+		})
+	},
+	{
+		path: ROUTE_PATH.CARD_REGISTER,
+		element: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardRegisterPage, {})
+	},
+	{
+		path: ROUTE_PATH.CARD_REGISTER_COMPLETE,
+		element: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardRegisterCompletePage, {})
+	},
+	{
+		path: ROUTE_PATH.CARD_LIST,
+		element: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardListPage, {})
+	}
+], { basename: "/react-payments/" });
 //#endregion
 //#region src/App.tsx
 var App = () => {
@@ -17908,5 +18558,24 @@ var App = () => {
 };
 //#endregion
 //#region src/main.tsx
-(0, import_client.createRoot)(document.getElementById("root")).render(/* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.StrictMode, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(App, {}) }));
+var renderApp = () => {
+	(0, import_client.createRoot)(document.getElementById("root")).render(/* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.StrictMode, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(App, {}) }));
+};
+async function main() {
+	try {
+		const { worker } = await __vitePreload(async () => {
+			const { worker } = await import("./browser-Dcb7tZ6N.js");
+			return { worker };
+		}, []);
+		await worker.start({
+			serviceWorker: { url: `/react-payments/mockServiceWorker.js` },
+			onUnhandledRequest: "bypass"
+		});
+	} catch (error) {
+		console.error("MSW 시작에 실패했습니다.", error);
+	}
+	renderApp();
+}
+main();
 //#endregion
+export { detectCardBrand as t };
