@@ -14983,6 +14983,9 @@ var updateCardNumberUnitsFormat = (cardNumber, format) => {
 var getCardNumberPlaceholder = (length) => {
 	return "1234567890".slice(0, length);
 };
+var formatCardNumberByFour = (cardNumber) => {
+	return cardNumber.match(/.{1,4}/g)?.join(" ") ?? cardNumber;
+};
 //#endregion
 //#region src/assets/Mastercard.png
 var Mastercard_default = "data:image/png;base64,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";
@@ -17629,7 +17632,7 @@ function _temp2(prev_2) {
 //#endregion
 //#region src/components/common/Button.tsx
 var Button = styled.button`
-  width: ${({ fullWidth }) => fullWidth ? "100%" : "auto"};
+  width: ${({ fixedBottom, fullWidth }) => fixedBottom || fullWidth ? "100%" : "auto"};
   height: ${({ fixedBottom }) => fixedBottom ? "auto" : "2.8rem"};
   padding: ${({ fixedBottom }) => fixedBottom ? "1.25rem" : "0.5rem"};
   border-radius: ${({ fixedBottom }) => fixedBottom ? "0" : "0.3rem"};
@@ -17716,7 +17719,14 @@ var registerCard = async (card) => {
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify(card)
 	});
-	if (!response.ok) throw new ApiError(await response.json());
+	if (!response.ok) {
+		if (response.status === 400) {
+			const error = await response.json().catch(() => null);
+			if (error) throw new ApiError(error);
+		}
+		throw new Error("카드 등록에 실패했습니다.");
+	}
+	return response.json();
 };
 var getCards = async () => {
 	const response = await fetch("/cards");
@@ -17755,6 +17765,7 @@ var CardRegisterPage = () => {
 	const isFormValid = validateCardForm(cardNumber, cardCompany, validityPeriod, CVC, password);
 	const handleCardFormSubmit = async (event) => {
 		event.preventDefault();
+		if (!isFormValid) return;
 		try {
 			await registerCard({
 				number: cardNumber.join(""),
@@ -17769,8 +17780,12 @@ var CardRegisterPage = () => {
 		} catch (error) {
 			if (error instanceof ApiError) {
 				const field = SERVER_ERROR_FIELD_BY_CODE[error.code];
-				if (field) setServerErrors({ [field]: error.message });
+				if (field) {
+					setServerErrors({ [field]: error.message });
+					return;
+				}
 			}
+			window.alert(error instanceof Error ? error.message : "카드 등록에 실패했습니다.");
 		}
 	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PageLayout, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(PageWrapper$2, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardWrapper, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Card, {
@@ -17830,7 +17845,6 @@ var CardRegisterPage = () => {
 			}),
 			isFormValid && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
 				type: "submit",
-				fullWidth: true,
 				fixedBottom: true,
 				children: "확인"
 			})
@@ -18001,42 +18015,50 @@ var ErrorImage_default = "/react-payments/assets/ErrorImage-D729SCkj.png";
 //#endregion
 //#region src/components/CardList/CardListError.tsx
 var CardListError = (t0) => {
-	const $ = (0, import_compiler_runtime.c)(5);
-	const { onRetry } = t0;
+	const $ = (0, import_compiler_runtime.c)(9);
+	const { message, onRetry } = t0;
 	let t1;
-	let t2;
-	let t3;
 	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
 		t1 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ErrorImage, {
 			src: ErrorImage_default,
 			alt: "errorImage"
 		});
-		t2 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ErrorTitle, { children: "카드 목록을 불러올 수 없어요" });
-		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Description, { children: "잠시 후 다시 시도해 주세요." });
 		$[0] = t1;
-		$[1] = t2;
-		$[2] = t3;
-	} else {
-		t1 = $[0];
-		t2 = $[1];
-		t3 = $[2];
-	}
+	} else t1 = $[0];
+	let t2;
+	if ($[1] !== message) {
+		t2 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ErrorTitle, { children: message });
+		$[1] = message;
+		$[2] = t2;
+	} else t2 = $[2];
+	let t3;
+	if ($[3] === Symbol.for("react.memo_cache_sentinel")) {
+		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Description, { children: "잠시 후 다시 시도해 주세요." });
+		$[3] = t3;
+	} else t3 = $[3];
 	let t4;
-	if ($[3] !== onRetry) {
-		t4 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Container$2, { children: [
+	if ($[4] !== onRetry) {
+		t4 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+			fullWidth: true,
+			onClick: onRetry,
+			children: "다시 시도"
+		});
+		$[4] = onRetry;
+		$[5] = t4;
+	} else t4 = $[5];
+	let t5;
+	if ($[6] !== t2 || $[7] !== t4) {
+		t5 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Container$2, { children: [
 			t1,
 			t2,
 			t3,
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-				fullWidth: true,
-				onClick: onRetry,
-				children: "다시 시도"
-			})
+			t4
 		] });
-		$[3] = onRetry;
-		$[4] = t4;
-	} else t4 = $[4];
-	return t4;
+		$[6] = t2;
+		$[7] = t4;
+		$[8] = t5;
+	} else t5 = $[8];
+	return t5;
 };
 var Container$2 = styled.div`
   padding-top: 7.5rem;
@@ -18123,7 +18145,11 @@ var CardListLoading = () => {
 	const $ = (0, import_compiler_runtime.c)(1);
 	let t0;
 	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
-		t0 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Container$1, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(List$1, { children: Array.from({ length: SKELETON_ITEM_COUNT }).map(_temp) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AddButtonSkeleton, {})] });
+		t0 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Container$1, {
+			role: "status",
+			"aria-label": "카드 목록 불러오는 중",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(List$1, { children: Array.from({ length: SKELETON_ITEM_COUNT }).map(_temp) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AddButtonSkeleton, {})]
+		});
 		$[0] = t0;
 	} else t0 = $[0];
 	return t0;
@@ -18154,7 +18180,7 @@ var deleteIcon_default = "data:image/svg+xml,%3csvg%20width='13'%20height='13'%2
 //#endregion
 //#region src/components/CardList/CardListItem.tsx
 var CardListItem = (t0) => {
-	const $ = (0, import_compiler_runtime.c)(26);
+	const $ = (0, import_compiler_runtime.c)(28);
 	const { card, onDelete } = t0;
 	let t1;
 	if ($[0] !== card.issuerCode) {
@@ -18178,68 +18204,76 @@ var CardListItem = (t0) => {
 		$[5] = t5;
 	} else t5 = $[5];
 	let t6;
-	if ($[6] !== card.number) {
-		t6 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardNumber, { children: card.number });
-		$[6] = card.number;
+	if ($[6] !== card.maskedNumber) {
+		t6 = formatCardNumberByFour(card.maskedNumber);
+		$[6] = card.maskedNumber;
 		$[7] = t6;
 	} else t6 = $[7];
 	let t7;
-	if ($[8] !== card.expirationDate) {
-		t7 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardExpirationDate, { children: ["유효기간 ", card.expirationDate] });
-		$[8] = card.expirationDate;
+	if ($[8] !== t6) {
+		t7 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardNumber, { children: t6 });
+		$[8] = t6;
 		$[9] = t7;
 	} else t7 = $[9];
 	let t8;
-	if ($[10] !== t5 || $[11] !== t6 || $[12] !== t7) {
-		t8 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardInfo, { children: [
-			t5,
-			t6,
-			t7
-		] });
-		$[10] = t5;
-		$[11] = t6;
-		$[12] = t7;
-		$[13] = t8;
-	} else t8 = $[13];
+	if ($[10] !== card.expirationDate) {
+		t8 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardExpirationDate, { children: ["유효기간 ", card.expirationDate] });
+		$[10] = card.expirationDate;
+		$[11] = t8;
+	} else t8 = $[11];
 	let t9;
-	if ($[14] !== t3 || $[15] !== t8) {
-		t9 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardContent, { children: [t3, t8] });
-		$[14] = t3;
-		$[15] = t8;
-		$[16] = t9;
-	} else t9 = $[16];
+	if ($[12] !== t5 || $[13] !== t7 || $[14] !== t8) {
+		t9 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardInfo, { children: [
+			t5,
+			t7,
+			t8
+		] });
+		$[12] = t5;
+		$[13] = t7;
+		$[14] = t8;
+		$[15] = t9;
+	} else t9 = $[15];
 	let t10;
-	if ($[17] !== card.id || $[18] !== onDelete) {
-		t10 = () => onDelete(card.id);
-		$[17] = card.id;
-		$[18] = onDelete;
-		$[19] = t10;
-	} else t10 = $[19];
+	if ($[16] !== t3 || $[17] !== t9) {
+		t10 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(CardContent, { children: [t3, t9] });
+		$[16] = t3;
+		$[17] = t9;
+		$[18] = t10;
+	} else t10 = $[18];
 	let t11;
-	if ($[20] === Symbol.for("react.memo_cache_sentinel")) {
-		t11 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DeleteIcon, {
+	if ($[19] !== card.id || $[20] !== onDelete) {
+		t11 = () => onDelete(card.id);
+		$[19] = card.id;
+		$[20] = onDelete;
+		$[21] = t11;
+	} else t11 = $[21];
+	let t12;
+	if ($[22] === Symbol.for("react.memo_cache_sentinel")) {
+		t12 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DeleteIcon, {
 			src: deleteIcon_default,
 			alt: ""
 		});
-		$[20] = t11;
-	} else t11 = $[20];
-	let t12;
-	if ($[21] !== t10) {
-		t12 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DeleteButton, {
-			onClick: t10,
-			children: t11
-		});
-		$[21] = t10;
 		$[22] = t12;
 	} else t12 = $[22];
 	let t13;
-	if ($[23] !== t12 || $[24] !== t9) {
-		t13 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Item, { children: [t9, t12] });
-		$[23] = t12;
-		$[24] = t9;
-		$[25] = t13;
-	} else t13 = $[25];
-	return t13;
+	if ($[23] !== t11) {
+		t13 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DeleteButton, {
+			type: "button",
+			"aria-label": "카드 삭제",
+			onClick: t11,
+			children: t12
+		});
+		$[23] = t11;
+		$[24] = t13;
+	} else t13 = $[24];
+	let t14;
+	if ($[25] !== t10 || $[26] !== t13) {
+		t14 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Item, { children: [t10, t13] });
+		$[25] = t10;
+		$[26] = t13;
+		$[27] = t14;
+	} else t14 = $[27];
+	return t14;
 };
 var Item = styled.li`
   display: flex;
@@ -18360,23 +18394,26 @@ var AddButtonWrapper = styled.div`
 //#endregion
 //#region src/hooks/useCardList.ts
 var useCardList = () => {
-	const $ = (0, import_compiler_runtime.c)(6);
+	const $ = (0, import_compiler_runtime.c)(5);
 	let t0;
 	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
-		t0 = [];
+		t0 = { status: "loading" };
 		$[0] = t0;
 	} else t0 = $[0];
-	const [cards, setCards] = (0, import_react.useState)(t0);
-	const [status, setStatus] = (0, import_react.useState)("idle");
+	const [cardListState, setCardListState] = (0, import_react.useState)(t0);
 	let t1;
 	if ($[1] === Symbol.for("react.memo_cache_sentinel")) {
 		t1 = async () => {
-			setStatus("loading");
 			try {
-				setCards(await getCards());
-				setStatus("success");
+				setCardListState({
+					status: "success",
+					data: await getCards()
+				});
 			} catch {
-				setStatus("error");
+				setCardListState({
+					status: "error",
+					message: "카드 목록을 불러올 수 없어요"
+				});
 			}
 		};
 		$[1] = t1;
@@ -18392,24 +18429,22 @@ var useCardList = () => {
 	} else t2 = $[2];
 	const removeCard = t2;
 	let t3;
-	if ($[3] !== cards || $[4] !== status) {
+	if ($[3] !== cardListState) {
 		t3 = {
-			cards,
-			status,
+			cardListState,
 			fetchCards,
 			removeCard
 		};
-		$[3] = cards;
-		$[4] = status;
-		$[5] = t3;
-	} else t3 = $[5];
+		$[3] = cardListState;
+		$[4] = t3;
+	} else t3 = $[4];
 	return t3;
 };
 //#endregion
 //#region src/pages/CardListPage.tsx
 var CardListPage = () => {
-	const $ = (0, import_compiler_runtime.c)(29);
-	const { cards, status, fetchCards, removeCard } = useCardList();
+	const $ = (0, import_compiler_runtime.c)(30);
+	const { cardListState, fetchCards, removeCard } = useCardList();
 	const navigate = useNavigate();
 	let t0;
 	let t1;
@@ -18450,12 +18485,12 @@ var CardListPage = () => {
 		$[6] = t3;
 	} else t3 = $[6];
 	const handleDeleteCard = t3;
-	const hasCards = cards.length > 0;
-	const isSuccess = status === "success";
-	const isLoading = status === "loading";
-	const isError = status === "error";
+	const isSuccess = cardListState.status === "success";
+	const isLoading = cardListState.status === "loading";
+	const isError = cardListState.status === "error";
+	const hasCards = isSuccess && cardListState.data.length > 0;
 	const isEmpty = isSuccess && !hasCards;
-	const pageTitle = isSuccess && hasCards ? `보유 카드 (${cards.length})` : "보유 카드";
+	const pageTitle = isSuccess && hasCards ? `보유 카드 (${cardListState.data.length})` : "보유 카드";
 	let t4;
 	if ($[7] !== pageTitle) {
 		t4 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PageTitle, { children: pageTitle });
@@ -18476,13 +18511,13 @@ var CardListPage = () => {
 		$[13] = t6;
 	} else t6 = $[13];
 	let t7;
-	if ($[14] !== cards || $[15] !== handleAddCard || $[16] !== handleDeleteCard || $[17] !== hasCards || $[18] !== isSuccess) {
+	if ($[14] !== cardListState.data || $[15] !== handleAddCard || $[16] !== handleDeleteCard || $[17] !== hasCards || $[18] !== isSuccess) {
 		t7 = isSuccess && hasCards && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardListSuccess, {
-			cards,
+			cards: cardListState.data,
 			onAddCard: handleAddCard,
 			onDeleteCard: handleDeleteCard
 		});
-		$[14] = cards;
+		$[14] = cardListState.data;
 		$[15] = handleAddCard;
 		$[16] = handleDeleteCard;
 		$[17] = hasCards;
@@ -18490,14 +18525,18 @@ var CardListPage = () => {
 		$[19] = t7;
 	} else t7 = $[19];
 	let t8;
-	if ($[20] !== fetchCards || $[21] !== isError) {
-		t8 = isError && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardListError, { onRetry: fetchCards });
-		$[20] = fetchCards;
-		$[21] = isError;
-		$[22] = t8;
-	} else t8 = $[22];
+	if ($[20] !== cardListState.message || $[21] !== fetchCards || $[22] !== isError) {
+		t8 = isError && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardListError, {
+			message: cardListState.message,
+			onRetry: fetchCards
+		});
+		$[20] = cardListState.message;
+		$[21] = fetchCards;
+		$[22] = isError;
+		$[23] = t8;
+	} else t8 = $[23];
 	let t9;
-	if ($[23] !== t4 || $[24] !== t5 || $[25] !== t6 || $[26] !== t7 || $[27] !== t8) {
+	if ($[24] !== t4 || $[25] !== t5 || $[26] !== t6 || $[27] !== t7 || $[28] !== t8) {
 		t9 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PageLayout, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(PageWrapper, { children: [
 			t4,
 			t5,
@@ -18505,13 +18544,13 @@ var CardListPage = () => {
 			t7,
 			t8
 		] }) });
-		$[23] = t4;
-		$[24] = t5;
-		$[25] = t6;
-		$[26] = t7;
-		$[27] = t8;
-		$[28] = t9;
-	} else t9 = $[28];
+		$[24] = t4;
+		$[25] = t5;
+		$[26] = t6;
+		$[27] = t7;
+		$[28] = t8;
+		$[29] = t9;
+	} else t9 = $[29];
 	return t9;
 };
 var PageWrapper = styled.div`
@@ -18564,7 +18603,7 @@ var renderApp = () => {
 async function main() {
 	try {
 		const { worker } = await __vitePreload(async () => {
-			const { worker } = await import("./browser-Dcb7tZ6N.js");
+			const { worker } = await import("./browser-1sHhfpFA.js");
 			return { worker };
 		}, []);
 		await worker.start({
@@ -18578,4 +18617,4 @@ async function main() {
 }
 main();
 //#endregion
-export { detectCardBrand as t };
+export { CARD_BRANDS as n, detectCardBrand as t };

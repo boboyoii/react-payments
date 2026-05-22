@@ -1,4 +1,4 @@
-import { t as detectCardBrand } from "./index-CCoSK_ph.js";
+import { n as CARD_BRANDS, t as detectCardBrand } from "./index-CG-ycb8F.js";
 //#region node_modules/outvariant/lib/index.mjs
 var POSITIONALS_EXP$1 = /(%?)(%([sdijo]))/g;
 function serializePositional$1(positional, flag) {
@@ -20143,35 +20143,24 @@ var http = {
 //#endregion
 //#region src/mocks/handlers.ts
 var cards = [];
-//#endregion
-//#region src/mocks/browser.ts
-var worker = setupWorker(...[
+var handlers = [
 	http.post("/cards", async ({ request }) => {
 		const card = await request.json();
-		if (!detectCardBrand(card.number)) return HttpResponse.json({
-			code: "INVALID_CARD_NUMBER",
-			message: "유효하지 않은 카드 번호입니다."
-		}, { status: 400 });
-		if (card.cvc === "000") return HttpResponse.json({
-			code: "INVALID_CVC",
-			message: "유효하지 않은 CVC입니다."
-		}, { status: 400 });
-		if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(card.expirationDate)) return HttpResponse.json({
-			code: "INVALID_EXPIRATION_DATE",
-			message: "유효하지 않은 만료일입니다."
-		}, { status: 400 });
+		const error = validateCardRegisterRequest(card);
+		if (error) return HttpResponse.json(error, { status: 400 });
+		const id = crypto.randomUUID();
 		cards.push({
-			id: crypto.randomUUID(),
+			id,
 			...card
 		});
-		return new HttpResponse(null, { status: 201 });
+		return HttpResponse.json({ id }, { status: 201 });
 	}),
 	http.get("/cards", () => {
 		const response = cards.map((card) => {
 			return {
 				id: card.id,
 				issuerCode: card.issuerCode,
-				number: card.number,
+				maskedNumber: maskCardNumber(card.number),
 				expirationDate: card.expirationDate
 			};
 		});
@@ -20183,6 +20172,32 @@ var worker = setupWorker(...[
 		if (targetIndex !== -1) cards.splice(targetIndex, 1);
 		return new HttpResponse(null, { status: 204 });
 	})
-]);
+];
+var maskCardNumber = (cardNumber) => {
+	return `${cardNumber.slice(0, 6)}******${cardNumber.slice(-4)}`;
+};
+var validateCardRegisterRequest = (card) => {
+	const cardBrand = detectCardBrand(card.number);
+	if (!/^\d+$/.test(card.number) || !cardBrand || card.number.length !== CARD_BRANDS[cardBrand].totalLength) return {
+		code: "INVALID_CARD_NUMBER",
+		message: "유효하지 않은 카드 번호입니다."
+	};
+	if (!/^\d{3,4}$/.test(card.cvc)) return {
+		code: "INVALID_CVC",
+		message: "유효하지 않은 CVC입니다."
+	};
+	if (!card.issuerCode) return {
+		code: "INVALID_ISSUER_CODE",
+		message: "카드사를 선택해 주세요."
+	};
+	if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(card.expirationDate)) return {
+		code: "INVALID_EXPIRATION_DATE",
+		message: "유효하지 않은 만료일입니다."
+	};
+	return null;
+};
+//#endregion
+//#region src/mocks/browser.ts
+var worker = setupWorker(...handlers);
 //#endregion
 export { worker };
